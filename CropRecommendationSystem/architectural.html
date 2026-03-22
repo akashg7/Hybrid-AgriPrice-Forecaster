@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation System — Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fcf8 0%, #e8f5e9 100%);
+            min-height: 100vh; padding: 40px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container {
+            background: white; padding: 40px; border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08); max-width: 1400px; width: 100%;
+        }
+        h1 { color: #1b4332; text-align: center; font-size: 1.8em; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #555; font-size: 1.05em; margin-bottom: 30px; line-height: 1.6; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 30px; }
+        .info-card {
+            background: #f8f9fa; padding: 20px; border-radius: 12px;
+            border-left: 4px solid #2d6a4f;
+        }
+        .info-card h3 { color: #1b4332; margin-bottom: 8px; font-size: 1em; }
+        .info-card p { color: #555; font-size: 0.9em; line-height: 1.5; }
+        .info-card code { background: #e8f5e9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+        .badge {
+            display: inline-block; background: #2d6a4f; color: white; padding: 3px 10px;
+            border-radius: 12px; font-size: 0.75em; margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 AgriSense AI — Crop Recommendation Architecture</h1>
+        <p class="subtitle">
+            End-to-end ML pipeline: 8 raw features → 45 engineered features → Dual-model comparison → Interactive Streamlit dashboard<br>
+            <span class="badge">22 Crops</span>
+            <span class="badge">99.55% Accuracy</span>
+            <span class="badge">5-Fold CV</span>
+            <span class="badge">LightGBM + RandomForest</span>
+        </p>
+
+        <div class="mermaid">
+            flowchart TD
+                subgraph Data_Source ["1. Data Source"]
+                    A1["Crop_recommendation.csv<br>(Kaggle archive.zip)<br>2200 rows x 8 cols"]
+                end
+
+                subgraph Feature_Engineering ["2. Feature Engineering Pipeline (build_features.py)"]
+                    A1 -->|"Raw: N, P, K, temp,<br>humidity, pH, rainfall"| B1
+
+                    B1["Phase 1: Nutrient Interactions<br>NPK ratios, products, dominance,<br>balance score, CV"] --> B2
+                    B2["Phase 2: Climate & pH Features<br>Heat index, aridity, rain/humidity,<br>pH deviation, quadratic terms"] --> B3
+                    B3["Phase 3: Regime Binning<br>Rainfall, pH, Temperature<br>categorical bins"] --> B4
+                    B4["Phase 4: Statistical Z-Scores<br>Global z-scores for all<br>7 numeric features"] --> B5
+                    B5["Phase 5: Label Encoding<br>22 crop classes encoded"]
+                end
+
+                subgraph Training ["3. Model Training (train_crop_model.py)"]
+                    B5 -->|"45 features + target"| C0
+                    C0["Stratified 80/20 Split<br>+ StandardScaler"] --> C1
+                    C0 --> C2
+
+                    C1["RandomForest<br>200 trees, depth=15<br>Test Acc: 99.55%"]
+                    C2["LightGBM<br>500 trees, lr=0.05<br>Test Acc: 98.64%"]
+
+                    C1 -->|"5-Fold CV"| C3["Best Model Selection<br>Naive Baseline: 4.5%"]
+                    C2 -->|"5-Fold CV"| C3
+                end
+
+                subgraph Artifacts ["4. Exported Artifacts"]
+                    C3 --> D1[("crop_recommendation_lgbm.pkl")]
+                    C3 --> D2[("crop_feature_scaler.pkl")]
+                    B5 --> D3[("label_encoders.pkl")]
+                    C3 --> D4[("model_comparison_summary.csv")]
+                    C3 --> D5[("feature_importance_crop.csv")]
+                end
+
+                subgraph Dashboard ["5. Streamlit Dashboard (app.py)"]
+                    D1 -.->|"Loads Model"| F1
+                    D2 -.->|"Loads Scaler"| F1
+                    D3 -.->|"Loads Encoders"| F1
+
+                    U1(["User Input Sliders<br>N, P, K, Temp, Humidity,<br>pH, Rainfall"]) -->|"7 raw values"| F1
+
+                    F1{"Real-time Feature<br>Engineering + Inference"} -->|"predict_proba()"| G1
+
+                    G1["Top Crop + Confidence<br>+ 4 Alternatives<br>+ Full Probability Dist."]
+                end
+
+                classDef source fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+                classDef feat fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+                classDef model fill:#e8f5e9,stroke:#2E7D32,stroke-width:2px;
+                classDef artifact fill:#eceff1,stroke:#607d8b,stroke-width:2px;
+                classDef ui fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px;
+
+                class A1 source;
+                class B1,B2,B3,B4,B5 feat;
+                class C0,C1,C2,C3 model;
+                class D1,D2,D3,D4,D5 artifact;
+                class F1,U1,G1 ui;
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>📂 Data Source</h3>
+                <p>Kaggle Crop Recommendation dataset (<code>archive.zip</code>) with 2200 samples across 22 crop types. Features: N, P, K, temperature, humidity, pH, rainfall.</p>
+            </div>
+            <div class="info-card">
+                <h3>⚙️ Feature Engineering</h3>
+                <p>Expands 8 raw columns into <b>45 features</b>: NPK ratios & products, nutrient dominance flags, climate interactions (heat index, aridity), pH squared & deviation, rainfall log transform, regime binning, z-scores.</p>
+            </div>
+            <div class="info-card">
+                <h3>🤖 Model Training</h3>
+                <p>Dual-model benchmark: <b>RandomForest</b> (99.55%) vs <b>LightGBM</b> (98.64%). Naive baseline at 4.5%. 5-fold stratified cross-validation. Automatic best model selection.</p>
+            </div>
+            <div class="info-card">
+                <h3>📊 Evaluation Suite</h3>
+                <p>Per-class precision/recall/F1, confusion matrices, feature importance ranking (top: humidity, k_ratio, heat_index). Full test predictions exported as CSV.</p>
+            </div>
+            <div class="info-card">
+                <h3>🖥️ Dashboard (app.py)</h3>
+                <p>Streamlit UI with real-time inference. User adjusts 7 sliders → pipeline engineers 45 features on-the-fly → model outputs crop probabilities across all 22 classes.</p>
+            </div>
+            <div class="info-card">
+                <h3>🔗 Pipeline Scripts</h3>
+                <p>
+                    <code>build_features.py</code> → Feature engineering<br>
+                    <code>train_crop_model.py</code> → Model training<br>
+                    <code>evaluate_models.py</code> → Post-hoc evaluation<br>
+                    <code>app.py</code> → Streamlit dashboard
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

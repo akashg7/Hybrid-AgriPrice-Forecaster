@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Flow</title>
+    <!-- Include mermaid.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hybrid-AgriPrice-Forecaster Layer Architecture</h1>
+        <div class="mermaid">
+            flowchart TD
+                %% Define Data Sources
+                subgraph Data_Collection ["Data Collection (Raw Sources)"]
+                    A1["Agmarknet<br>(Daily Mandi Prices)"] -->|"Scraped Data"| B1("DataScraping Scripts")
+                    A2["Geographic Database<br>(District Lat/Lon)"] --> B2("Mandi-Coordinate Map")
+                    A3["NASA POWER API<br>(Weather Data)"] -->|"Temp, Rainfall, etc."| B3("Weather Enrichment")
+                end
+
+                %% Data Linking
+                B1 --> C1{"MergingFiles<br>& PreProcessing"}
+                B2 --> B3
+                B3 --> C1
+
+                %% Post Collection Raw Data
+                C1 -->|"merged_crop_data.csv<br>mandi_crop_pairs.csv"| D1("Feature Engineering Phase")
+
+                subgraph Feature_Engineering ["Feature Engineering"]
+                    D1 --> D2["build_training_data.py"]
+                    D1 --> D3["prepare_moirai_data.py"]
+                    
+                    D2 -->|"Parquet Data"| E1(("Processed Data<br>Lags, Rolling Stats"))
+                    D3 -->|"Scaled/Formatted Data"| E2(("Moirai Scaled Data"))
+                end
+
+                subgraph Model_Training ["Model Training"]
+                    E1 --> F1("LightGBM Full Features<br>'train_lgbm_full_features.py'")
+                    E2 --> F2("Salesforce Moirai<br>Zero-Shot Model")
+                    
+                    F1 -->|"Models Weights"| G1[("LightGBM PKL")]
+                    F2 -->|"Uses uni2ts Library"| G2[("Pre-trained Moirai")]
+                end
+
+                subgraph Forecasting_Engine ["Forecasting Engine"]
+                    G1 -.->|"forecast_all.py"| H1("LightGBM Forecasts")
+                    G2 -.->|"forecast_all_moirai.py"| H2("Moirai Forecasts")
+                    E1 -.-> H1
+                    E2 -.-> H2
+                    H1 --> H3(("Forecast Outputs<br>14-Day Prices"))
+                    H2 --> H3
+                end
+
+                subgraph Analytics_Layer ["Analytics & Insights"]
+                    H3 --> I1["recommend_market.py<br>(Best Market)"]
+                    H3 --> I2["analytics_nearby_markets.py<br>(Price Comparison)"]
+                    H3 --> I3["best_crop_by_region.py<br>(Crop Recommendation)"]
+                end
+
+                %% Styling
+                classDef source fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+                classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+                classDef datastore fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+                classDef outputs fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px;
+
+                class A1,A2,A3 source;
+                class B1,B2,B3,C1,D2,D3 process;
+                class E1,E2,G1,G2 datastore;
+                class I1,I2,I3,H3 outputs;
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
