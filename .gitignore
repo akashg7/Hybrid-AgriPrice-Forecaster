@@ -44,7 +44,7 @@ mandi_crop_pairs.csv
 CropRecommendationSystem/data_core.csv
 CropRecommendationSystem/evaluate_models.py
 CropRecommendationSystem/Crop_recommendation.csv
-CropRecommendationSystem/profitable_crop_recommender.py 
+CropRecommendationSystem/profitable_crop_recommender.py
 
 # Models
 models/
