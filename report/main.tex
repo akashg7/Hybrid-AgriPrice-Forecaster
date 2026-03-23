@@ -1,0 +1,282 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% --- Packages ---
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{enumitem}
+
+\begin{document}
+
+\title{Hybrid AgriPrice Forecaster: Integrated Mandi Price Prediction and Crop Recommendation System}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Karthik Reddy}
+\IEEEauthorblockA{\textit{B.Tech Computer Science \& Artificial Intelligence} \\
+\textit{Rishihood University}\\
+Roll No. 230035}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Akash G}
+\IEEEauthorblockA{\textit{B.Tech Computer Science \& Artificial Intelligence} \\
+\textit{Rishihood University}\\
+Roll No. 230098}
+}
+
+\maketitle
+
+\begin{abstract}
+Agricultural commodity price volatility remains one of the most pressing socioeconomic challenges in India, directly affecting the livelihoods of over 150 million farming households. This project presents the Hybrid AgriPrice Forecaster, a dual-system machine learning pipeline that addresses two interconnected problems: forecasting daily modal commodity prices across Indian Mandis with a 14-day horizon, and recommending the most profitable crop to cultivate given local soil and climatic conditions. The Mandi Price Prediction system utilizes a custom dataset synthesized by scraping the Government of India's Agmarknet portal, enriched with geo-located weather data from the NASA POWER API. By engineering over 70 features spanning temporal dynamics, rolling volatility, and weather anomalies, a LightGBM gradient boosting regressor achieves a Symmetric Mean Absolute Percentage Error (SMAPE) of 9.69\% (accuracy $\approx$ 90.31\%). This drastically outperforms both a naive baseline and a zero-shot Salesforce Moirai foundation model. In parallel, the Crop Recommendation classifier trains on a Kaggle soil-and-crop dataset expanded from 7 raw features to over 45 engineered features, such as nutrient ratios and climate interactions. It predicts agronomically viable crops with near-perfect benchmark accuracy. A hybrid algorithm then integrates these pipelines, scaling biological feasibility by the 14-day expected economic return to recommend the optimal crop. The end-to-end framework is deployed via an interactive Streamlit dashboard.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Agricultural price forecasting, LightGBM, Gradient Boosting, Time-series forecasting, Crop recommendation, Feature engineering, Moirai foundation model.
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\subsection{Background and Motivation}
+India's agricultural sector contributes approximately 18\% to the gross domestic product and employs nearly 42\% of the workforce \cite{fao2023}. Despite this immense economic and social significance, Indian farmers routinely face devastating price volatility. Commodities such as onions and tomatoes can swing in value by 200\% to 400\% within a single season. This hyper-volatility is driven by a combination of perishability, supply gluts, erratic monsoons, and a fragmented cold-chain infrastructure \cite{chand2012}. 
+
+A 2019 report by NITI Aayog estimated that such volatility and corresponding market timing inefficiencies cost the Indian agricultural economy over \$8 billion annually in post-harvest losses \cite{nitiaayog2019}. While existing government portals such as Agmarknet and eNAM provide vital \emph{historical} market data, they offer no forward-looking predictive intelligence. Consequently, farmers are forced to rely on anecdotal information, middlemen, or outdated seasonal heuristics when making crucial decisions about what crop to cultivate and where or when to sell their harvest. Given this massive information asymmetry, machine-learning-driven forecasting systems hold significant potential to stabilize agricultural incomes.
+
+\subsection{Problem Statement}
+This project systematically addresses two tightly coupled problems in agro-economics:
+\begin{enumerate}
+    \item \textbf{Price Forecasting:} Given historical daily modal prices, supply arrival volumes, and localized weather conditions for a specific mandi--commodity pair, predict the modal price for a future 14-day horizon.
+    \item \textbf{Crop Recommendation:} Given a farmer's specific soil profile (Nitrogen, Phosphorous, Potassium, pH) and localized climate expectations (temperature, humidity, rainfall), recommend the single most profitable crop that integrates both biological suitability and predicted market economics.
+\end{enumerate}
+
+\subsection{Literature Survey}
+Time-series forecasting of agricultural prices has historically been addressed via classical econometrics such as Autoregressive Integrated Moving Average (ARIMA) and Generalized Autoregressive Conditional Heteroskedasticity (GARCH) models \cite{box2015, bollerslev1986}. More recently, standard machine learning methods like Support Vector Machines (SVMs) and Random Forests have been successfully applied \cite{breiman2001, chen2016xgboost}. 
+Presently, deep learning architectures—specifically Long Short-Term Memory (LSTM) networks \cite{hochreiter1997} and Transformers \cite{vaswani2017}—are considered state-of-the-art for multivariate forecasting.
+
+However, several recent empirical studies indicate that tree-based gradient boosting methods frequently outperform deep architectures on tabular, feature-engineered datasets \cite{grinsztajn2022tree}. Frameworks like LightGBM \cite{ke2017lightgbm} handle high-cardinality categorical variables intrinsically, which is crucial when modeling hundreds of uniquely identified market districts (mandis). Furthermore, the emergence of ``zero-shot'' time-series foundation models—such as Salesforce's Moirai \cite{woo2024moirai} and Google's TimesFM \cite{das2024timesfm}—has introduced generalized pre-trained models capable of forecasting without domain-specific fine-tuning. Evaluating these foundation models against finely-tuned gradient boosting regressors on highly volatile, localized agricultural data remains a novel area of exploration.
+
+On the agronomic side, crop recommendation systems documented in the literature predominantly utilize soil nutrient features combined with environmental data using standard classifiers \cite{pudumalar2017}. Yet, these systems typically operate in an economic vacuum, recommending biological crop suitability without guaranteeing market profitability.
+
+\subsection{Objectives}
+The primary objectives of this research are:
+\begin{enumerate}
+    \item To construct an automated pipeline that scrapes, aggregates, and weather-enriches daily agricultural market data.
+    \item To train, evaluate, and benchmark multiple forecasting architectures (LightGBM and Moirai) for 14-day price prediction tasks.
+    \item To build a high-dimensional crop recommendation classifier employing deeply engineered soil and climate interactive features.
+    \item To design a \emph{hybrid} algorithm that fuses the price forecasting and crop recommendation paradigms into a unified decision engine.
+\end{enumerate}
+
+\section{Methodology}
+
+The project architecture comprises two discrete machine learning systems that operate independently during training and feature engineering, but merge during inference to form the hybrid recommendation layer.
+
+\subsection{System 1: Mandi Price Prediction}
+
+\subsubsection{Data Collection Pipeline}
+The ground truth for commodity pricing was sourced from the Government of India's Agmarknet platform. Given the absence of bulk historical dataset downloads, a custom Python scraper (\texttt{fast\_scrape.py}) was developed to reverse-engineer the API endpoints and iteratively collect daily reports covering January 2024 to December 2025. 
+
+To introduce vital atmospheric indicators into the dataset, we executed geographic mapping. Since Agmarknet yields district names rather than precise geospatial coordinates, we applied fuzzy string-matching algorithms (using normalized Levenshtein distance) against an open-source Indian cities database. Ambiguous labels were corrected via manual overrides. These resultant latitude and longitude pairs were then queried against the NASA POWER API to retrieve highly granular historical weather metrics, including minimum/maximum temperature ($T_{2M\_MIN}$, $T_{2M\_MAX}$), relative humidity ($RH_{2M}$), correct precipitation, and downward solar irradiance.
+
+\subsubsection{Top-10 Commodity Strategy}
+Rather than indiscriminately targeting all agricultural goods, we curated a portfolio of 10 strategic commodities to maximize model exposure to differing volatility profiles:
+\begin{itemize}
+    \item \textbf{High Volatility:} Onion and Tomato, subject to sudden perishable supply shocks.
+    \item \textbf{Staples (Minimum Support Price):} Wheat and Rice, displaying substantial volume but artificially anchored valuation floors.
+    \item \textbf{Moderate Volatility:} Potato, governed by distinct cold-storage cycles.
+    \item \textbf{Regional/Spatial:} Dry Chili and Banana, heavily dependent on specific supply chain hubs (e.g., Guntur).
+    \item \textbf{Oilseeds:} Groundnut and Mustard, displaying systemic long-term cyclical patterns.
+    \item \textbf{Seasonal Fruits:} Watermelon, characterized by sharp summer consumption peaks.
+\end{itemize}
+
+\subsubsection{Feature Engineering}
+Transforming the raw 20-column DataFrame into a machine-learning-ready format required computing over 70 engineered features (\texttt{build\_training\_data.py}). These features contextualized the time series mathematically:
+\begin{itemize}
+    \item \textbf{Temporal Cyclicity:} Extraction of $\text{day}$, $\text{month}$, and boolean $\text{is\_weekend}$ flags. Crucially, annual cycles were preserved via sine and cosine Fourier transformations.
+    \item \textbf{Price Trajectory \& Volatility:} The integration of autoregressive lag features covering 1, 3, 7, 14, and 30 day intervals. Rolling standard deviations quantified localized market volatility.
+    \item \textbf{Supply \& Weather Shocks:} Lagged volumes of Mandi arrivals were used to simulate supply crunches. Weather anomalies were calculated as the daily deviation from the rolling 30-day baseline (e.g., $T_{anomaly} = T_{daily} - \bar{T}_{30}$).
+    \item \textbf{Spatial Encodings:} Trigonometric transformations of the previously obtained latitude/longitude coordinates enabled the models to implicitly infer geographical proximity among disparate mandis.
+\end{itemize}
+
+\subsubsection{Model Architectures}
+The primary regressor architecture employed was LightGBM, a highly efficient gradient boosting framework that scales sub-linearly and utilizes a leaf-wise tree growth approach capable of generating complex asymmetrical trees. 
+The loss function minimized was standard L2 (Mean Squared Error), targeting the \emph{next-day modal price}. To prevent data leakage, training and validation splits were enacted purely chronologically, reserving the terminal 8\% of the timeline exclusively for out-of-sample testing. By adopting a \texttt{colsample\_bytree} argument of $0.8$, the algorithm sub-samples available features at each tree building step, injecting stochasticity to avoid overfitting the dominant lag variables.
+
+Parallel to LightGBM, we deployed Salesforce Moirai (\texttt{moirai-1.1-R-small}) to evaluate the viability of foundation models. Moirai uses a masked Transformer encoder architecture pre-trained on billions of general time-series observations. We conducted zero-shot inference, refraining from fine-tuning the transformer weights on our Indian mandi target space.
+
+\subsection{System 2: Crop Recommendation}
+
+\subsubsection{Agronomic Dataset}
+The dataset anchoring the recommendation system is the widely utilized Kaggle Crop and Soil Dataset, containing 2,200 records distributed equitably across 22 crop classes. The foundational variables consisted solely of Nitrogen (N), Phosphorous (P), Potassium (K), Temperature, Humidity, pH, and Rainfall.
+
+\subsubsection{High-Dimensional Feature Expansion}
+Recognizing that 7 dimensions are insufficient to encapsulate complex biological synergies, we formulated over 45 composite markers:
+\begin{itemize}
+    \item \textbf{Nutrient Interactions:} Computed total macroscopic nutrient loads ($N+P+K$), fractional ratios (e.g., $N/(N+P+K)$), and multiplicative agronomic interactions ($N \times P \times K$). Statistical variance across the three primary nutrients dictated a ``nutrient balance score''.
+    \item \textbf{Climate Proxies:} A simplified physiological heat index ($T \times H / 100$) and an aridity index ($T / (\text{Rainfall} + \epsilon)$) were developed to simulate abiotic stress capabilities. Non-linear sensitivities to alkaline or acidic soils were captured via a pH baseline deviation metric $|pH - 7.0|$.
+    \item \textbf{Discretized Grouping:} Binning operations segmented continuous rainfall and temperature ranges into strict categorical boundaries, which tree-based classifiers leverage efficiently.
+\end{itemize}
+
+\subsubsection{Classifier Deployment}
+The multi-class schema was trained via a secondary LightGBM classifier optimizing for softmax cross-entropy. Model robustness was guaranteed by instituting 5-fold stratified cross-validation alongside comparative benchmarking against a dense Random Forest ensemble (200 standalone estimators).
+
+\subsection{The Hybrid Recommendation Algorithm}
+At the point of inference, the two disjoint subsystems are integrated. 
+
+\begin{algorithm}[H]
+\caption{Hybrid Profit-Maximizing Recommender}
+\begin{algorithmic}[1]
+\REQUIRE Soil profile $\mathbf{S}$, Climate profile $\mathbf{C}$, target mandi $M$
+\STATE Scale $[\mathbf{S}; \mathbf{C}]$ executing 45-feature expansion
+\STATE Calculate crop probabilities $\mathbf{P} = \text{LightGBM}_{crop}([\mathbf{S}; \mathbf{C}])$
+\STATE Select subset of top 3 viable crops: $\mathcal{V} = \{v_1, v_2, v_3\}$
+\FOR{each crop $v_i \in \mathcal{V}$}
+    \STATE $Forecasts = \text{Predict 14-day curve}(M, v_i)$
+    \STATE $PeakPrice_i = \max(Forecasts)$
+\ENDFOR
+\STATE \textbf{Return} biologically viable crop $v^*$ where $v^* = \arg\max_{v_i} PeakPrice_i$
+\end{algorithmic}
+\end{algorithm}
+
+This methodology guarantees that an agronomically optimal crop is bypassed if its anticipated market payout renders it economically inferior to an alternative matching crop.
+
+\section{Dataset and Exploratory Data Analysis}
+
+\subsection{System 1: Mandi Price Dataset}
+Post-engineering, the dataset comprises roughly 250,000 dense rows. Exploratory Data Analysis (EDA) yielded several critical market insights:
+\begin{itemize}
+    \item \textbf{Skewness & Volatility:} Crops like bananas display a severe right-skewed price distribution characteristic of frequent supply bottlenecks, while heavily regulated grains like wheat form rigid symmetric distributions bounded by the government's Minimum Support Price.
+    \item \textbf{Weather-Price Causality:} We observed a significant positive Pearson correlation ($\approx 0.35$) pairing multi-week rainfall anomalies directly with trailing price surges in perishable vegetables (tomatoes).
+    \item \textbf{High Autocorrelation:} Fast-decaying partial autocorrelation (PACF) plots confirmed that lag-1 and lag-7 features encapsulate massive predictive variance, motivating the deep auto-regressive engineering phase.
+\end{itemize}
+
+\subsection{System 2: Crop Recommendation Dataset}
+Kaggle's 2,200 observation matrix enjoys a flawless class balance minimizing inductive bias. 
+Clustering analysis demonstrates distinct parameter spaces for unrelated crops; for instance, Apples and Rice are completely disjointed across the humidity and rainfall axes. However, legumes and cereals overlap considerably, validating the necessity of deep feature extraction like the `dominant\_nutrient` indicator to successfully partition the classifier boundary.
+
+\section{Model Design}
+
+\subsection{LightGBM Regressor Hyperparameters}
+The price forecaster operates iteratively utilizing 2,000 estimators alongside a restrained learning rate of 0.03. Maximum tree depth was left unlimited (controlled instead by a rigid restriction of 63 terminal leaves per tree) to encourage the capture of obscure hyper-local geographical anomalies without gross generalization errors. Sub-sampling on both the row and column axes was statically assigned at 0.8.
+
+\subsection{Moirai Configuration}
+Salesforce Moirai ingests historical context windows directly parsed as time-series patches relative to the 14-day prediction horizon limit. The output vector behaves not as point forecasts, but as parameterized distributions enabling probabilistic range scaling.
+
+\section{Results}
+
+\subsection{System 1: Price Forecasting Results}
+
+The aggregated test set comprising the final chronological segment of the scraped timeline yielded defining results. Metrics centered predominantly on the Symmetric Mean Absolute Percentage Error (SMAPE) to avoid the zero-bound asymmetry commonly flawing pure MAPE calculations.
+
+\begin{table}[htbp]
+\caption{Global Test-Set Forecasting Performance}
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Model} & \textbf{MAE (\rupee/q)} & \textbf{SMAPE (\%)} & \textbf{Accuracy (\%)} \\
+\midrule
+Naive Baseline       & $---$ & 48.40 & 51.60 \\
+Moirai (Zero-Shot)   & $\sim 543.00$ & $---$ & $---$ \\
+\textbf{LightGBM (Full)}    & \textbf{310.14} & \textbf{9.69} & \textbf{90.31} \\
+\bottomrule
+\end{tabular}
+\label{tab:price_metrics}
+\end{center}
+\end{table}
+
+The LightGBM framework successfully registered a massive 1.75$\times$ accuracy surge comparative to naive mapping assumptions. 
+Conversely, Moirai experienced significant difficulty. Standard foundation models lack the capacity to process disparate exogenous features (weather, geo-location), relying exclusively on the univariate pricing series. Furthermore, pre-training largely involves energy and financial portfolios that lack structural similarities to the heavily regulated Indian agricultural pipelines.
+
+Disaggregated tracking reveals variable performance: staples like rice frequently chart SMAPE under 5\%, whilst hyper-volatile tomatoes struggle at an 18\% margin as the model conservatively under-projects anomalous peak pricing logic.
+
+\subsection{System 2: Crop Classification Results}
+
+The LightGBM agronomy mapping module concluded with an extreme degree of precision.
+
+\begin{table}[H]
+\centering
+\caption{Crop Classifier Test Split Performance}
+\label{tab:crop_results}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Model} & \textbf{Accuracy (\%)} & \textbf{F1 (Macro)} \\
+\midrule
+Random Forest & $99.1$ & $0.99$ \\
+\textbf{LightGBM} & \textbf{$99.3$} & \textbf{$0.99$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 5-fold cross-validation routine corroborated the primary metrics, yielding a sustained validation score of $99.0\% \pm 0.5\%$. Crucially, the engineered composite features superseded original numerical inputs during feature importance ranking arrays, with combined moisture (`humidity`) establishing itself as the primary categorical partition.
+
+\section{Failure Analysis}
+
+Despite robust performance metrics, several systemic vulnerabilities necessitate acknowledgment:
+\begin{itemize}
+    \item \textbf{Black-Swan Inflexibility:} The price predictor strictly anticipates organic momentum and classical cyclical shocks. It physically cannot react to exogenous paradigm shifts lacking temporal precedence (e.g., sudden unseasonal hailstorms completely disabling a transport corridor the day prior to harvest). Real-time sentiment analysis via news scraping represents the primary mitigation avenue.
+    \item \textbf{Foundation Model Misalignment:} The experiment verified that "Zero-Shot" viability deteriorates when applied to intensely localized, exogenous-dependent systems like the Indian Mandis. Large-scale fine-tuning remains indispensable for deploying foundation models accurately.
+    \item \textbf{Synthetic Precision Boundaries:} The $99\%$ accuracy achieved by the crop recommender is inflated by the pristine, noiseless clustering typical to Kaggle datasets. In practical deployment utilizing localized physical soil-testing hardware, sensor noise and degradation will severely hamper this margin.
+    \item \textbf{Unidirectional Recommendation:} The hybrid output solely maximizes projected revenue at the 14-day mark. It egregiously omits the fundamental calculus regarding internal cost of cultivation, risk tolerance variability, or multi-year crop-rotation schedules essential to long term soil health.
+\end{itemize}
+
+\section{Conclusion}
+
+The development of the \textbf{Hybrid AgriPrice Forecaster} successfully intertwines discrete datasets encapsulating both localized biology (soil markers) and macroscopic economics (Mandi supply chains). By synthesizing Agmarknet records, cross-referencing NASA atmospheric statistics, and engineering over 115 features spanning both subsystems, the algorithm deployed capable predictive pipelines. LightGBM empirically asserted categorical superiority against generalized foundation architectures, limiting global test-error margins (SMAPE) to under 10\% for commodity valuations.
+
+By migrating inference loops into an easily accessible Streamlit dashboard, this project delivers a functional proof-of-concept demonstrating that advanced machinations of gradient boosted ensembles can seamlessly augment the historically disconnected workflows of the Indian agricultural sector—empowering laborers with actionable data. Future endeavors focus fundamentally on transitioning multi-objective optimization metrics into the hybrid loop while adapting foundational times-series models iteratively.
+
+\begin{thebibliography}{99}
+
+\bibitem{fao2023}
+FAO, \emph{The State of Food and Agriculture 2023}, Food and Agriculture Organization of the United Nations, 2023.
+
+\bibitem{chand2012}
+R. Chand, ``Development policies and agricultural markets,'' \emph{Economic and Political Weekly}, vol.~47, no.~52, pp.~53--63, 2012.
+
+\bibitem{nitiaayog2019}
+NITI Aayog, \emph{Demand and Supply Projections Towards 2033: Crops, Livestock, Fisheries and Agricultural Inputs}, Government of India, 2019.
+
+\bibitem{box2015}
+G.~E.~P. Box, G.~M. Jenkins, G.~C. Reinsel, and G.~M. Ljung, \emph{Time Series Analysis: Forecasting and Control}, 5th ed. John Wiley \& Sons, 2015.
+
+\bibitem{bollerslev1986}
+T. Bollerslev, ``Generalized autoregressive conditional heteroskedasticity,'' \emph{Journal of Econometrics}, vol.~31, no.~3, pp.~307--327, 1986.
+
+\bibitem{breiman2001}
+L. Breiman, ``Random Forests,'' \emph{Machine Learning}, vol.~45, no.~1, pp.~5--32, 2001.
+
+\bibitem{chen2016xgboost}
+T. Chen and C. Guestrin, ``XGBoost: A scalable tree boosting system,'' in \emph{Proc. KDD}, 2016, pp.~785--794.
+
+\bibitem{hochreiter1997}
+S. Hochreiter and J. Schmidhuber, ``Long short-term memory,'' \emph{Neural Computation}, vol.~9, no.~8, pp.~1735--1780, 1997.
+
+\bibitem{vaswani2017}
+A. Vaswani \emph{et al.}, ``Attention is all you need,'' in \emph{Proc. NeurIPS}, 2017.
+
+\bibitem{ke2017lightgbm}
+G. Ke \emph{et al.}, ``LightGBM: A highly efficient gradient boosting decision tree,'' in \emph{Proc. NeurIPS}, 2017, pp.~3149--3157.
+
+\bibitem{grinsztajn2022tree}
+L. Grinsztajn, E. Oyallon, and G. Varoquaux, ``Why do tree-based models still outperform deep learning on typical tabular data?'' in \emph{Proc. NeurIPS Datasets and Benchmarks}, 2022.
+
+\bibitem{woo2024moirai}
+G. Woo \emph{et al.}, ``Unified training of universal time series forecasting transformers,'' in \emph{Proc. ICML}, 2024.
+
+\bibitem{das2024timesfm}
+A. Das \emph{et al.}, ``A decoder-only foundation model for time-series forecasting,'' in \emph{Proc. ICML}, 2024.
+
+\bibitem{pudumalar2017}
+S. Pudumalar \emph{et al.}, ``Crop recommendation system for precision agriculture,'' in \emph{Proc. ICECA}, IEEE, 2017, pp.~32--36.
+
+\bibitem{icar2020}
+ICAR, \emph{Impact of Climate Variability on Vegetable Prices in India}, Indian Council of Agricultural Research, Technical Bulletin, 2020.
+
+\end{thebibliography}
+
+\end{document}
