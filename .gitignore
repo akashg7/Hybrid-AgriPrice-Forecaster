@@ -40,6 +40,12 @@ data/metadata/*.csv
 # Re-ignoring it based on "unwanted data" request.
 mandi_crop_pairs.csv
 
+#Unused files 
+CropRecommendationSystem/data_core.csv
+CropRecommendationSystem/evaluate_models.py
+CropRecommendationSystem/Crop_recommendation.csv
+CropRecommendationSystem/profitable_crop_recommender.py
+
 # Models
 models/
 *.pkl
