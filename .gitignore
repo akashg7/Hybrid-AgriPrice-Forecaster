@@ -57,3 +57,7 @@ plots/
 .idea/
 
 presentation/
+
+# Ignore references explanation
+references_explain.txt
+references_explain.md
