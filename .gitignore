@@ -3,11 +3,18 @@
 __pycache__/
 *.py[cod]
 *.log
+*.orig
+*log.txt
+progressTracker*.txt
 
 # Virtual Environments
 .venv/
 venv/
 env/
+
+# Offline / Research Scripts
+UnifiedAgriSystem/continuous_trainer.py
+MandiPricePredictionSystem/EDA_*.ipynb
 
 # Large Data Sets
 merged_crop_data_with_weather.csv
@@ -52,6 +59,9 @@ models/
 *.pth
 *.pt
 *.safetensors
+*.keras
+*.h5
+*.ckpt
 
 # Outputs / Artefacts
 outputs/

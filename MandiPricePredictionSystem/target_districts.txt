@@ -1,0 +1,827 @@
+Kishanganj
+Banka
+Madhubani
+Khagaria
+Madhepura
+Rohtas
+Samastipur
+Chandigarh
+Durg
+Rajnandgaon
+North Goa
+Ahmedabad
+Anand
+Bharuch
+Kachchh
+Navsari
+Dahod
+Banaskanth
+Jamnagar
+Rajkot
+Kheda
+Bhavnagar
+Mehsana
+Morbi
+Porbandar
+Surat
+Vadodara(Baroda)
+Ambala
+Jhajar
+Panchkula
+Hissar
+Bhiwani
+Kaithal
+Sirsa
+Gurgaon
+Sonipat
+Karnal
+Palwal
+Yamuna Nagar
+Fatehabad
+Jind
+Kurukshetra
+Panipat
+Rohtak
+Mahendragarh-Narnaul
+Faridabad
+Mewat
+Rewari
+Siwan
+Bilaspur
+Chamba
+Hamirpur
+Kangra
+Kullu
+Sirmore
+Una
+Mandi
+Solan
+Shimla
+Jammu
+Kathua
+Anantnag
+Udhampur
+Chikmagalur
+Davangere
+Hassan
+Dharwad
+Mangalore(Dakshin Kannad)
+Shimoga
+Udupi
+Ernakulam
+Thiruvananthapuram
+Kottayam
+Thirssur
+Kollam
+Alappuzha
+Kozhikode(Calicut)
+Kasargod
+Kannur
+Idukki
+Palakad
+Malappuram
+Ratlam
+Sehore
+Ujjain
+Dhar
+Badwani
+Bhopal
+Dewas
+Indore
+Hoshangabad
+Jabalpur
+Shajapur
+Khandwa
+Neemuch
+Mandsaur
+Morena
+Rajgarh
+Jhabua
+Sagar
+Shivpuri
+Ahmednagar
+Akola
+Jalgaon
+Nashik
+Chattrapati Sambhajinagar
+Dharashiv(Usmanabad)
+Dhule
+Nagpur
+Jalana
+Pune
+Beed
+Kolhapur
+Sholapur
+Satara
+Sangli
+Mumbai
+Delhi
+Khurda
+Bargarh
+Kalahandi
+Bhadrak
+Dhenkanal
+Ganjam
+Balasore
+Keonjhar
+Nuapada
+Rayagada
+Sundergarh
+Mayurbhanja
+Fazilka
+Amritsar
+Moga
+Mohali
+Fatehgarh
+Gurdaspur
+Bhatinda
+Sangrur
+Ropar (Rupnagar)
+Ludhiana
+Faridkot
+Ferozpur
+Hoshiarpur
+Patiala
+Shahjahanpur
+Muktsar
+Gandhinagar
+Nawanshahr
+Tarntaran
+Kapurthala
+Ajmer
+Alwar FV
+Jaipur Rural
+Hanumangarh
+Bhilwara
+Chomu FV APMC
+Churu
+Jaipur
+Jodhpur
+Kota
+Kotputli- Behror
+Jhunjhunu
+Pratapgarh
+Rajsamand
+Sikar
+Ganganagar
+AJattihalli(Uzhavar Sandhai )
+Alangudi(Uzhavar Sandhai )
+Ambattur(Uzhavar Sandhai )
+Ammapet(Uzhavar Sandhai )
+Anaiyur(Uzhavar Sandhai )
+Andipatti(Uzhavar Sandhai )
+Anna nagar(Uzhavar Sandhai )
+Arani(Uzhavar Sandhai )
+Aranthangi(Uzhavar Sandhai )
+Arcot(Uzhavar Sandhai )
+Ariyalur(Uzhavar Sandhai)
+Aruppukottai(Uzhavar Sandhai )
+Athur(Uzhavar Sandhai )
+Attayampatti(Uzhavar Sandhai )
+Avallapalli(Uzhavar Sandhai )
+Bodinayakanur(Uzhavar Sandhai )
+Chengalpet(Uzhavar Sandhai )
+Chengam(Uzhavar Sandhai )
+Cheyyar(Uzhavar Sandhai )
+Chidambaram(Uzhavar Sandhai )
+Chinnalapatti(Uzhavar Sandhai )
+Chinnamanur(Uzhavar Sandhai )
+Chokkikulam(Uzhavar Sandhai )
+Coonoor(Uzhavar Sandhai )
+Cuddalore(Uzhavar Sandhai )
+Denkanikottai(Uzhavar Sandhai )
+Devakottai (Uzhavar Sandhai )
+Devaram(Uzhavar Sandhai )
+Dharapuram(Uzhavar Sandhai )
+Dharmapuri(Uzhavar Sandhai )
+Dindigul(Uzhavar Sandhai )
+Edapadi (Uzhavar Sandhai )
+Elampillai(Uzhavar Sandhai )
+Gandarvakottai(Uzhavar Sandhai )
+Gingee(Uzhavar Sandhai )
+Gobichettipalayam(Uzhavar Sandhai )
+Gudalur(Uzhavar Sandhai )
+Gudiyatham(Uzhavar Sandhai )
+Guduvancheri(Uzhavar Sandhai )
+Harur(Uzhavar Sandhai )
+Hasthampatti(Uzhavar Sandhai )
+Hosur(Uzhavar Sandhai )
+Jalagandapuram(Uzhavar Sandhai )
+Jameenrayapettai(Uzhavar Sandhai )
+Jeyankondam (Uzhavar Sandhai )
+Kahithapattarai(Uzhavar Sandhai )
+Kallakurichi(Uzhavar Sandhai )
+Kambam(Uzhavar Sandhai )
+Kancheepuram(Uzhavar Sandhai )
+Kangayam(Uzhavar Sandhai )
+Karaikudi(Uzhavar Sandhai )
+Karambakkudi(Uzhavar Sandhai )
+Kariyapatti(Uzhavar Sandhai )
+Karur(Uzhavar Sandhai )
+Katpadi (Uzhavar Sandhai )
+Kaveripattinam(Uzhavar Sandhai )
+Keelpennathur(Uzhavar Sandhai )
+Kovilpatti(Uzhavar Sandhai )
+Krishnagiri(Uzhavar Sandhai )
+Kulithalai(Uzhavar Sandhai )
+Kumarapalayam(Uzhavar Sandhai )
+Kumbakonam (Uzhavar Sandhai )
+Kundrathur(Uzhavar Sandhai )
+Kurichi(Uzhavar Sandhai )
+Lalgudi(Uzhavar Sandhai )
+Madhuranthagam(Uzhavar Sandhai )
+Manachanallur(Uzhavar Sandhai )
+Manapparai(Uzhavar Sandhai )
+Mannargudi I(Uzhavar Sandhai )
+Mannargudi II(Uzhavar Sandhai )
+Mayiladuthurai(Uzhavar Sandhai )
+Medavakkam(Uzhavar Sandhai )
+Melapalayam(Uzhavar Sandhai )
+Melur(Uzhavar Sandhai )
+Mettupalayam(Uzhavar Sandhai )
+Mettur(Uzhavar Sandhai )
+Mohanur(Uzhavar Sandhai )
+Musiri(Uzhavar Sandhai )
+Muthupettai(Uzhavar Sandhai )
+Myladi(Uzhavar Sandhai )
+NGO Colony(Uzhavar Sandhai )
+Nagapattinam(Uzhavar Sandhai )
+Namakkal(Uzhavar Sandhai )
+Nanganallur(Uzhavar Sandhai )
+Naravarikuppam(Uzhavar Sandhai )
+Natrampalli(Uzhavar Sandhai )
+Needamangalam(Uzhavar Sandhai )
+Padappai(Uzhavar Sandhai )
+Palacode(Uzhavar Sandhai )
+Palanganatham(Uzhavar Sandhai )
+Palani(Uzhavar Sandhai )
+Palayamkottai(Uzhavar Sandhai )
+Palladam(Uzhavar Sandhai )
+Pallavaram(Uzhavar Sandhai )
+Panruti(Uzhavar Sandhai )
+Papanasam(Uzhavar Sandhai )
+Paramakudi(Uzhavar Sandhai )
+Paramathivelur(Uzhavar Sandhai )
+Paruthipattu(Uzhavar Sandhai )
+Pattukottai(Uzhavar Sandhai )
+Pennagaram(Uzhavar Sandhai )
+Perambakkam(Uzhavar Sandhai )
+Perambalur(Uzhavar Sandhai )
+Periyakulam(Uzhavar Sandhai )
+Perundurai(Uzhavar Sandhai )
+Pollachi(Uzhavar Sandhai )
+Polur(Uzhavar Sandhai )
+Pudukottai(Uzhavar Sandhai )
+RSPuram(Uzhavar Sandhai )
+Rajapalayam(Uzhavar Sandhai )
+Ramanathapuram(Uzhavar Sandhai )
+Ranipettai(Uzhavar Sandhai )
+Rasipuram(Uzhavar Sandhai )
+Sampath Nagar(Uzhavar Sandhai )
+Sankarankoil(Uzhavar Sandhai )
+Sankarapuram(Uzhavar Sandhai )
+Sathiyamagalam(Uzhavar Sandhai )
+Sathur(Uzhavar Sandhai )
+Singampunari(Uzhavar Sandhai )
+Singanallur(Uzhavar Sandhai )
+Sirkali(Uzhavar Sandhai )
+Sivagangai (Uzhavar Sandhai )
+Sivakasi(Uzhavar Sandhai )
+Sooramangalam(Uzhavar Sandhai )
+Srivilliputhur(Uzhavar Sandhai )
+Sulur(Uzhavar Sandhai )
+Sundarapuram(Uzhavar Sandhai )
+Sunguvarchatram(Uzhavar Sandhai )
+Tenkasi(Uzhavar Sandhai )
+Thalavadi(Uzhavar Sandhai )
+Thalavaipuram(Uzhavar Sandhai )
+Thammampatti (Uzhavar Sandhai )
+Thanjavur(Uzhavar Sandhai )
+Thathakapatti(Uzhavar Sandhai )
+Theni(Uzhavar Sandhai )
+Thirukalukundram(Uzhavar Sandhai )
+Thirumangalam(Uzhavar Sandhai )
+Vellore
+Thiruchirappalli
+Villupuram
+Namakkal
+Tirupatthur(Uzhavar Sandhai )
+Tiruppur (North) (Uzhavar Sandhai )
+Tiruppur (South) (Uzhavar Sandhai )
+Tiruvallur(Uzhavar Sandhai )
+Tiruvannamalai(Uzhavar Sandhai )
+Tiruvarur(Uzhavar Sandhai )
+Tuticorin(Uzhavar Sandhai )
+Udhagamandalam(Uzhavar Sandhai )
+Coimbatore
+Madurai
+Nagercoil (Kannyiakumari)
+Vadavalli(Uzhavar Sandhai )
+Vandavasi(Uzhavar Sandhai )
+Vaniyampadi(Uzhavar Sandhai )
+Vedasanthur(Uzhavar Sandhai )
+Velayuthampalayam(Uzhavar Sandhai )
+Viralimalai(Uzhavar Sandhai )
+Virudhunagar(Uzhavar Sandhai )
+Viruthachalam(Uzhavar Sandhai )
+Hyderabad
+Medak
+Sepahijala
+North Tripura
+Dhalai
+Unokoti
+Auraiya
+Agra
+Mirzapur
+Prayagraj
+Ambedkarnagar
+Aligarh
+Amroha
+Maharajganj
+Bulandshahar
+Bareilly
+Banda
+Azamgarh
+Raebarelli
+Badaun
+Bahraich
+Ballia
+Balrampur
+Unnao
+Barabanki
+Baghpat
+Basti
+Etawah
+Shravasti
+Bijnor
+Fatehpur
+Pillibhit
+Sambhal
+Chandauli
+Kannuj
+Jhansi
+Gorakhpur
+Saharanpur
+Gautam Budh Nagar
+Deoria
+Mau(Maunathbhanjan)
+Etah
+Ayodhya
+Farukhabad
+Firozabad
+Ghazipur
+Ghaziabad
+Mainpuri
+Lakhimpur
+Gonda
+Bhadohi(Sant Ravi Nagar)
+Dindori
+Hathras
+Hardoi
+Sitapur
+Jalaun (Orai)
+Jaunpur
+Shamli
+Kanpur
+Chitrakut
+Kasganj
+Mathura
+Lalitpur
+Lucknow
+Mahoba
+Khiri (Lakhimpur)
+Kaushambi
+Meerut
+Rampur
+Muzaffarnagar
+Siddharth Nagar
+Prayagraj APMC
+Kanpur Dehat
+Sonbhadra
+Surguja
+Kushinagar
+Varanasi
+Haridwar
+Nanital
+Udhamsinghnagar
+West Chambaran
+Dehradoon
+Alipurduar
+Paschim Bardhaman
+Puruliya
+Dakshin Dinajpur
+Bankura
+Kolkata
+North 24 Parganas
+Sounth 24 Parganas
+Jalpaiguri
+Nadia
+Birbhum
+Hooghly
+Darjeeling
+Malda
+Medinipur(W)
+Murshidabad
+Purba Bardhaman
+Coochbehar
+Howrah
+Medinipur(E)
+Chittor
+Nagaon
+Barpeta
+Kamrup
+Morigaon
+Sonitpur
+Karbi Anglong
+Golaghat
+Nalbari
+Kokrajhar
+Sibsagar
+Cachar
+Goalpara
+Amreli
+Gir Somnath
+Surendranagar
+Rajouri
+Bangalore
+Chamrajnagar
+Kolar
+Mandya
+Kalburgi
+Chhindwara
+Sheopur
+Singroli
+Harda
+Raigad
+Ratnagiri
+West Khasi Hills
+Kohima
+Boudh
+Kendrapara
+Koraput
+Gajapati
+Jalandhar
+Pathankot
+Sirohi
+Jalore
+Paota - Jodhpur FV APMC
+Sanchore
+Ambasamudram(Uzhavar Sandhai )
+Kandiyaperi(Uzhavar Sandhai )
+Pallapatti (Uzhavar Sandhai )
+Periyar Nagar(Uzhavar Sandhai )
+Tamarainagar(Uzhavar Sandhai )
+Thiruvarur
+Ranga Reddy
+Mahbubnagar
+Adilabad
+Nalgonda
+Warangal
+Gomati
+South Tripura
+Sant Kabir Nagar
+Bhojpur
+Araria
+Rewa
+East Khasi Hills
+Jagatsinghpur
+Jharsuguda
+Dungarpur
+Khowai
+West District
+Jhargram
+Kalimpong
+Balodabazar
+Kabirdham
+Raipur
+Mungeli
+Sabarkantha
+Devbhumi Dwarka
+Junagarh
+Botad
+Patan
+Panna
+Bhind
+Alirajpur
+Satna
+Anupur
+Guna
+Ashoknagar
+Chhatarpur
+Khargone
+Koria
+Raisen
+Shehdol
+Betul
+Datia
+Gwalior
+Burhanpur
+Seoni
+Narsinghpur
+Vidisha
+Tikamgarh
+Katni
+Mandla
+Damoh
+Sidhi
+Umariya
+Amarawati
+Wardha
+Latur
+Buldhana
+Bhandara
+Yavatmal
+Parbhani
+Thane
+Vashim
+Nandurbar
+Alwar
+Anupgarh
+Baran
+Dausa
+Chittorgarh
+Bharatpur
+Jhalawar
+Bijaynagar APMC
+Bikaner
+Bundi
+Deeg
+Tonk
+Dholpur
+Udaipur
+Fulera - Kishangarh Renwal APMC
+Gangapur City
+Geejgarh -Bandikui
+Karauli
+Jayal - Nagaur APMC
+Kawai Salpura - Atru APMC
+Kekri
+Panchmahals
+Mahuwa APMC
+Mandawar APMC
+Osiyan Mathania APMC
+Pugal Road Grain APMC
+Pali
+Todaraisingh APMC
+Jhansi Grain APMC
+Uttar Dinajpur
+Koppal
+Belgaum
+Madikeri(Kodagu)
+East Godavari
+Narmada
+Valsad
+Srinagar
+Bharnanganam VFPCK
+Wayanad
+Pathanamthitta
+Phek
+Tsemenyu
+Tiruthuraipoondi(Uzhavar Sandhai )
+Cuddapah
+Kurnool
+Mahasamund
+Chhota Udaipur
+Hingoli
+Chomu Grain APMC
+Neem Ka Thana
+Dimapur
+Puri
+Karimnagar
+Jamui
+Sheohar
+Raigarh
+Sonepur
+Barnala
+Mansa
+Jaisalmer
+Amethi
+Darrang
+Dhubri
+Jorhat
+Chandrapur
+Zunheboto
+Nayagarh
+East Jaintia Hills
+Burdwan
+Muzaffarpur
+Jashpur
+Nanded
+Beawar
+Khairthal Tijara
+Laxmangarh - Barodamev  APMC
+Champawat
+Krishna
+Longleng
+Chitradurga
+Khammam
+Wokha
+Balaghat
+Nagaur
+Janjgir
+East Garo Hills
+Bemetara
+Bishnupur
+Kakching
+Imphal East
+Thoubal
+South West Khasi Hills
+Purnea
+Godhra Kakanpur APMC
+Nizar(Rumkitalav) APMC
+Chhipabarod - Chhabra
+Swai Madhopur
+West Garo Hills
+Dhamtari
+Tumkur
+Imphal West
+Lalgarh Jatan - Sri Ganganagar Grain APMC
+Mokokchung
+Korba
+Mysore
+Nongpoh (R-Bhoi)
+South Garo Hills
+Surajpur
+Jehanabad
+Peren
+Garhwal (Pauri)
+Buxar
+West Jaintia Hills
+Sambhar - Kishangarh renwal APMC
+Sambalpur
+Kiphire
+Bolangir
+Deedwana Kuchaman
+Karwar(Uttar Kannad)
+Cuttack
+Kamuthi(Uzhavar Sandhai )
+Haveri
+Tuensang
+Balotra
+Godbhaga APMC
+Keerampara VFPCK APMC
+Bijapur
+Dudu
+Bidar
+Nowarangpur
+Luckeesarai
+Rajdhanai Mandi KukarKheda APMC
+Agar Malwa
+Nellore
+South West Garo Hills
+East Champaran/ Motihari
+Jodhpur Rural
+Kodaikkanal(Uzhavar Sandhai)
+Bastar
+Kanker
+Bellary
+Raichur
+Balod
+Vijayanagaram
+Anantapur
+Mon
+Gadag
+Malkangiri
+Gopalgang
+Phalodi APMC
+Lower Subansiri
+Pondicherry
+HanumangarhTown APMC
+Palnadu
+Annamayya
+Tirupathi
+Usilampatti(Uzhavar Sandhai )
+Bagalkot
+Jajpur
+Kollegal APMC
+Bhadradri Kothagudem
+SMY Rajgarh
+Islam Nagar APMC
+Kolhapur(Laxmipuri) APMC
+Sirsi APMC
+Motihari APMC
+Goalpara APMC
+Silapathar APMC
+Dhubri APMC
+Bohorihat APMC
+Gauripur APMC
+Fancy Bazaar APMC
+P.O. Uparhali Guwahati APMC
+Doomdumia APMC
+Gandhimaidan APMC
+Chairaideo APMC
+Haliyala APMC
+Tikabali APMC
+Meghraj(Rellavada) APMC
+Nagaur APMC
+Rairangpur APMC
+Bardoli(Kadod) APMC
+Kandhamal APMC
+"Kukatpally,RBZ APMC"
+Talod(Harsol) APMC
+Jeypore APMC
+Lanka APMC
+Enkoor APMC
+Bhind(F&V) APMC
+Seoni(F&V) APMC
+Shajapur(F&V) APMC
+Patiala(New Anaj Mandi) APMC
+Yellapur APMC
+Bagalkot(Bigali) APMC
+KKNagar(Uzhavar Sandhai )
+Thiruverumbur(Uzhavar Sandhai )
+Tirukattupalli(Uzhavar Sandhai )
+Tiruthani(Uzhavar Sandhai )
+Vadalur(Uzhavar Sandhai )
+Villupuram(Uzhavar Sandhai )
+Hindupur APMC
+Vengamedu(Uzhavar Sandhai )
+Hatpiplya(F&V) APMC
+Morena(F&V) APMC
+Damoh(F&V) APMC
+Yadgiri
+Gandhigramam(Uzhavar Sandhai)
+Karimangalam(Uzhavar Sandhai)
+Mecheri(Uzhavar Sandhai)
+Pallikonda(Uzhavar Sandhai)
+Perampet(Uzhavar Sandhai)
+Peravurani(Uzhavar Sandhai)
+Ponnamaravathi(Uzhavar Sandhai)
+Vazhapadi(Uzhavar Sandhai)
+Vedaranyam(Uzhavar Sandhai)
+Anuppur(F&V) APMC
+Burgampadu APMC
+Sidhauli APMC
+Ganj Dundwara APMC
+Jarar APMC
+Jewar APMC
+Mihipurwa APMC
+Mishrit APMC
+Shohratgarh APMC
+Utraula APMC
+Mau(Chitrakut) APMC
+Dhampur APMC
+Harappana Halli APMC
+Colonelganj APMC
+Haldaur APMC
+Kushinagar APMC
+Maholi APMC
+Meeranpur Katra APMC
+Risia APMC
+Saidpur APMC
+Rupaidiha APMC
+Nakur APMC
+Nanuta APMC
+Tanda Akbarpur APMC
+Sultanpurchilkana APMC
+Tinsukia APMC
+Kunigal APMC
+Rajim APMC
+KUKARMUNDA APMC
+Annigeri APMC
+North and Middle Andaman 
+Jamakhandi APMC
+Ashti APMC
+Nargunda APMC
+Shekari Krushi Khajgi Bazar APMC
+Badami APMC
+Sri Vijaya Puram APMC
+Talikot APMC
+Bori Arab APMC
+Hungund APMC
+Dharwar APMC
+Shorapur APMC
+"Sant Namdev Krushi Bazar,  APMC"
+Sariya APMC
+Gogamba(Similiya) APMC
+Aurad APMC
+Gogamba APMC
+Prantij(Salala) APMC
+Panwari APMC
+Narasinghpur APMC
+Keshranand Cotex  APMC
+Umari APMC
+Gubbi APMC
+H.B. Halli APMC
+Beri APMC
+Dirba APMC
+Limdi APMC
+Patiala(Anaj Mandi Sanaur Road) APMC
+Sandur APMC
+Shiggauv APMC
+Ajitwal APMC
+Rampuraphul(Bhai Rupan) APMC
+Rampuraphul(Dhapali) APMC
+Khamano (Sanghol) APMC
+Narot J Singh APMC
+Rampuraphul(Chowke) APMC
+Rampuraphul(Mehraj) APMC
+Ajitwal (Chogawan) APMC
+Bhagta Bhai Ka (Jalal) APMC
+Bhagta Bhai Ka(Kotha Guru Ka) APMC
+Moonak APMC
+Nawan Shahar(Mandi Aur) APMC
+Jeypore(Kotpad) APMC
+Ajitwal (Dala) APMC
+Mansa (Bhamekalan) APMC
+Sultanpur Lodhi (Tibba) APMC
