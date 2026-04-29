@@ -19,18 +19,34 @@ This is the **primary recommended model** for this dataset. It simulates a "full
 
 - **Status**: Trained & Tuned suitable for production.
 - **Features**: Lagged prices (1, 3, 7, 14, 30 days), Rolling Means/Std, Weather (Temp, Rainfall), Time embeddings.
-- **Accuracy (Test Set ~200k rows)**:
-  - **Accuracy**: **~90.31%** (100 - SMAPE)
-  - **MAE**: ~310.14 ₹/quintal
-  - **SMAPE**: 9.69%
-  - *Comparison*: Drastically dominates the naive baseline (Acc ~51.6%).
+- **Accuracy (Test Set, 56,826 rows)**:
+  - **Accuracy**: **~91.20%** (100 - SMAPE)
+  - **MAE**: 160.41 ₹/quintal
+  - **SMAPE**: 8.80%
+  - *Comparison*: Drastically dominates the global naive baseline (Acc ~21.3%).
 
 ### 2. Salesforce Moirai (Foundation Model)
 An experimental "Zero-Shot" approach using a pre-trained Transformer model (`moirai-1.1-R-small`) designed for universal time series forecasting.
 
 - **Status**: Experimental / Benchmarking.
 - **Approach**: Zero-shot (no fine-tuning on this specific data).
-- **Performance**: Currently underperforms the specific LightGBM model (MAE ~543 vs ~310), which is expected for zero-shot application on highly volatile specific commodity data.
+- **Performance**: Currently underperforms the specific LightGBM model (MAE ~543 vs ~310).
+
+### 3. Temporal Fusion Transformer (TFT) — Deep Learning
+A multi-horizon forecasting architecture that uses self-attention to capture long-range dependencies and multi-variable interactions (weather + arrivals).
+
+- **Accuracy**: **~86.59%** (14-day horizon, 3,815 validation sequences, epoch 9 checkpoint)
+- **MAE**: 319.88 ₹/quintal | **SMAPE**: 13.41%
+- **Features**: 30-feature multivariate set (Static, Observed, and Future covariates).
+- **Confidence**: Provides probabilistic quantile forecasts for risk management.
+- **Note**: Currently underperforms LightGBM on tabular features; further hyperparameter tuning (larger hidden_size, more epochs) would improve results.
+
+### 4. EfficientNet-B0 (Plant Disease Pathology)
+A Deep Learning vision track for automated leaf disease diagnosis across 38 classes.
+
+- **Architecture**: EfficientNet-B0 backbone with Two-Phase Transfer Learning.
+- **Accuracy**: **98.42%** on test set.
+- **Interpretability**: Integrated Grad-CAM to visualize pathological focus areas.
 
 ## 📂 Folder Structure
 

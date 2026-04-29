@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFT Architecture — Price Forecasting</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d1e3f8 100%);
+            min-height: 100vh; padding: 40px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container {
+            background: white; padding: 40px; border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); max-width: 1400px; width: 100%;
+        }
+        h1 { color: #1a365d; text-align: center; font-size: 1.8em; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #4a5568; font-size: 1.05em; margin-bottom: 30px; line-height: 1.6; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 30px; }
+        .info-card {
+            background: #f7fafc; padding: 20px; border-radius: 12px;
+            border-left: 4px solid #3182ce;
+        }
+        .info-card h3 { color: #2c5282; margin-bottom: 8px; font-size: 1em; }
+        .info-card p { color: #4a5568; font-size: 0.9em; line-height: 1.5; }
+        .badge {
+            display: inline-block; background: #3182ce; color: white; padding: 3px 10px;
+            border-radius: 12px; font-size: 0.75em; margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📉 Temporal Fusion Transformer (TFT) Architecture</h1>
+        <p class="subtitle">
+            Multivariate Deep Learning Pipeline: 30 features → Self-Attention → Probabilistic Quantile Forecasting<br>
+            <span class="badge">Multi-Horizon</span>
+            <span class="badge">86.59% Accuracy</span>
+            <span class="badge">PyTorch Forecasting</span>
+            <span class="badge">Quantile Loss</span>
+        </p>
+
+        <div class="mermaid">
+            flowchart TD
+                subgraph Data_Preparation ["1. Data Preparation (prepare_dl_30_features.py)"]
+                    A1["Mandi Price Data<br>+ Weather Enrichment"] -->|"Selects 30 Features"| B1["dl_30_features_data.csv"]
+                    B1 --> B2["Temporal Sorting<br>by Mandi & Commodity"]
+                    B2 --> B3["Time Index Creation<br>(Sequential per Group)"]
+                end
+
+                subgraph Dataset_Logic ["2. TimeSeriesDataSet Configuration"]
+                    B3 --> C1["Static Categoricals:<br>Mandi, Commodity"]
+                    B3 --> C2["Known Reals:<br>Day of Year, Sin/Cos Time"]
+                    B3 --> C3["Observed Reals:<br>Price, Weather, Lags"]
+                    
+                    C1 & C2 & C3 --> C4["Lookback Window: 30 Days<br>Forecast Horizon: 14 Days"]
+                end
+
+                subgraph TFT_Model ["3. TFT Architecture (tft_multivariate_training.py)"]
+                    C4 --> D1["Variable Selection Networks<br>(Input Importance)"]
+                    D1 --> D2["Gated Residual Connections<br>(Adaptive Learning)"]
+                    D2 --> D3["Multi-Head Attention<br>(Temporal Dependencies)"]
+                    D3 --> D4["Quantile Output Layer<br>(0.1, 0.5, 0.9 confidence)"]
+                end
+
+                subgraph Pipeline_Execution ["4. Training & Optimization"]
+                    D4 --> E1["Lightning Trainer<br>Early Stopping, Clip Grad"]
+                    E1 --> E2[("tft_multi_variate.ckpt")]
+                    E2 --> E3["eval_tft_summary.csv<br>vs LightGBM & Naive"]
+                end
+
+                subgraph User_Dashboard ["5. Unified Dashboard (serve.py)"]
+                    E2 -.->|"Inference Engine"| F1
+                    F1["Dashboard Lookup<br>State-Mandi-Commodity"] --> F2["14-Day Trajectory<br>+ Confidence Bands"]
+                end
+
+                classDef source fill:#ebf8ff,stroke:#3182ce,stroke-width:2px;
+                classDef logic fill:#fffaf0,stroke:#dd6b20,stroke-width:2px;
+                classDef model fill:#f0fff4,stroke:#38a169,stroke-width:2px;
+                classDef output fill:#faf5ff,stroke:#805ad5,stroke-width:2px;
+
+                class A1,B1,B2,B3 source;
+                class C1,C2,C3,C4 logic;
+                class D1,D2,D3,D4,E1 model;
+                class E2,E3,F1,F2 output;
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>📂 Multivariate Inputs</h3>
+                <p>Loads <code>dl_30_features_data.csv</code> containing historical prices, arrivals, and 5 weather variables (Temp, Humidity, Rainfall, Solar, Wind) mapped to daily records.</p>
+            </div>
+            <div class="info-card">
+                <h3>🧩 Variable Selection</h3>
+                <p>TFT uses specialized Variable Selection Networks to automatically weigh the importance of weather vs. historical lags for each forecast specific to a Mandy/Commodity pair.</p>
+            </div>
+            <div class="info-card">
+                <h3>🧠 Self-Attention Layer</h3>
+                <p>Processes the 30-day lookback window using Multi-Head Attention to identify long-range patterns (e.g., month-long price cycles) that standard RNNs or gradient boosters may miss.</p>
+            </div>
+            <div class="info-card">
+                <h3>📊 Probabilistic Outputs</h3>
+                <p>Uses <b>Quantile Loss</b> to predict the 10th, 50th (median), and 90th percentiles, providing farmers with price "confidence bands" rather than just a single point prediction.</p>
+            </div>
+            <div class="info-card">
+                <h3>🛡️ System Stability</h3>
+                <p>Implements Gradient Clipping (0.1) and Early Stopping during training on the Lightning framework to ensure the deep transformer converges reliably on volatile Indian market data.</p>
+            </div>
+            <div class="info-card">
+                <h3>🔗 Integration</h3>
+                <p>Forecasts are pre-generated and stored in Parquet format, allowing the <code>serve.py</code> backend to provide instant, reactive multi-horizon charts to end users.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

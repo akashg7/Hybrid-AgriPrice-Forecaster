@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Architecture — Pathology Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+            min-height: 100vh; padding: 40px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container {
+            background: white; padding: 40px; border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08); max-width: 1400px; width: 100%;
+        }
+        h1 { color: #064e3b; text-align: center; font-size: 1.8em; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #374151; font-size: 1.05em; margin-bottom: 30px; line-height: 1.6; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 30px; }
+        .info-card {
+            background: #f9fafb; padding: 20px; border-radius: 12px;
+            border-left: 4px solid #059669;
+        }
+        .info-card h3 { color: #064e3b; margin-bottom: 8px; font-size: 1em; }
+        .info-card p { color: #4b5563; font-size: 0.9em; line-height: 1.5; }
+        .badge {
+            display: inline-block; background: #059669; color: white; padding: 3px 10px;
+            border-radius: 12px; font-size: 0.75em; margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦠 Plant Disease Diagnosis Architecture</h1>
+        <p class="subtitle">
+            Transfer Learning Pipeline: EfficientNet-B0 + Grad-CAM Interpretability<br>
+            <span class="badge">38 Classes</span>
+            <span class="badge">98.42% Accuracy</span>
+            <span class="badge">Two-Phase Training</span>
+            <span class="badge">TensorFlow/Keras</span>
+        </p>
+
+        <div class="mermaid">
+            flowchart TD
+                subgraph Data_Pipe ["1. Data Acquisition & Cleaning (src/data_loader.py)"]
+                    A1["PlantVillage Datasets<br>(Kaggle hub downloads)"] --> B1["Perceptual Hash Deduplication<br>(imagehash 16-bit avg hash)"]
+                    B1 --> B2["Corrupted Image removal<br>+ Normalization"]
+                    B2 --> B3["70/15/15 Stratified Split<br>(data_split/ folders)"]
+                end
+
+                subgraph Augmentation_Engine ["2. Robust Augmentation (src/augmentation.py)"]
+                    B3 --> C1["Rotation, Flip, Zoom,<br>Brightness, Shear"]
+                    C1 --> C2["ImageDataGenerator<br>1/255 Normalization"]
+                end
+
+                subgraph Model_Architecture ["3. EfficientNet-B0 Track (src/model.py)"]
+                    C2 --> D1["EfficientNet-B0 Base<br>(Pretrained ImageNet)"]
+                    D1 --> D2["Global Average Pooling<br>+ BatchNormalization"]
+                    D2 --> D3["Dense(256) + Dropout(0.3)"]
+                    D3 --> D4["Softmax Output Layer<br>(38 classes)"]
+                end
+
+                subgraph Training_Loop ["4. Two-Phase Optimization (src/train.py)"]
+                    D4 --> E1["Phase 1: Frozen Base<br>(Adam lr=1e-3)"]
+                    E1 --> E2["Phase 2: Fine-Tuning Top 20<br>(Adam lr=1e-5)"]
+                    E2 --> E3[("best_model.keras")]
+                end
+
+                subgraph Interpretation ["5. Inference & explainability (src/evaluate.py)"]
+                    E3 --> F1["Grad-CAM Visualization<br>(src/gradcam.py)"]
+                    E3 --> F2["Failure Analysis<br>(Confusion Pair identification)"]
+                    F1 & F2 --> G1["classification_report.txt<br>+ Confusion Matrix"]
+                end
+
+                subgraph System_Deployment ["6. AgriSense AI Core (serve.py)"]
+                    E3 -.-> H1["Leaf Scanner API<br>/api/disease"]
+                    H1 --> H2["Predicted Class<br>+ Confidence Score<br>+ Prescriptions"]
+                end
+
+                classDef source fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
+                classDef feat fill:#fffbeb,stroke:#d97706,stroke-width:2px;
+                classDef model fill:#eff6ff,stroke:#2563eb,stroke-width:2px;
+                classDef artifact fill:#f9fafb,stroke:#4b5563,stroke-width:2px;
+
+                class A1,B1,B2,B3 source;
+                class C1,C2 feat;
+                class D1,D2,D3,D4,E1,E2 model;
+                class E3,F1,F2,G1,H1,H2 artifact;
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🌿 Efficiency-First Backbone</h3>
+                <p>Uses <b>EfficientNet-B0</b>, which employs compound scaling to achieve higher accuracy with 5.3M parameters compared to ResNet-50's 25.6M, making it ideal for agricultural IoT deployment.</p>
+            </div>
+            <div class="info-card">
+                <h3>⚖️ Data Leakage Protection</h3>
+                <p>Implements <b>Perceptual Hashing</b> instead of just MD5 to find near-duplicate images across merged datasets, ensuring training and test sets are strictly distinct.</p>
+            </div>
+            <div class="info-card">
+                <h3>⚡ Two-Phase Training</h3>
+                <p><b>Phase 1:</b> Only trains the classifier head on stable ImageNet features. <b>Phase 2:</b> Unfreezes the top 20 layers for domain-specific fine-tuning on leaf pathology nuances.</p>
+            </div>
+            <div class="info-card">
+                <h3>🎨 Explainable AI (XAI)</h3>
+                <p>Integrated <b>Grad-CAM</b> (Gradient-weighted Class Activation Mapping) produces heatmaps showing which parts of the leaf the model attended to—critical for pathology validation.</p>
+            </div>
+            <div class="info-card">
+                <h3>🔍 Failure Analysis</h3>
+                <p>Automated scripts identify top 10 confusion pairs (e.g., Tomato Late Blight vs. Septoria Leaf Spot) to guide further dataset balancing and multi-label refinement.</p>
+            </div>
+            <div class="info-card">
+                <h3>💉 Prescriptive Output</h3>
+                <p>The unified dashboard maps categorical disease predictions to actionable fertilizer and pesticide recommendations, bridging the gap between diagnosis and treatment.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

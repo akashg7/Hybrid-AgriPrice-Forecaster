@@ -7,6 +7,11 @@ __pycache__/
 *log.txt
 progressTracker*.txt
 
+# Training Artifacts
+lightning_logs/
+*.cpu_tmp*
+*.cpu_patched*
+
 # Virtual Environments
 .venv/
 venv/

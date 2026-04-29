@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgriSense AI — Price Forecasting & Crop Recommendation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.hdr{background:linear-gradient(135deg,#064e3b 0%,#065f46 50%,#1e3a5f 100%);padding:24px 40px;border-bottom:1px solid #334155}
+.hdr h1{font-size:28px;font-weight:800;background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr p{color:#94a3b8;font-size:13px;margin-top:2px}
+.tabs{display:flex;gap:0;background:#1e293b;border-bottom:1px solid #334155;padding:0 20px;overflow-x:auto}
+.tab{padding:12px 20px;cursor:pointer;font-weight:600;font-size:13px;color:#64748b;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
+.tab:hover{color:#10b981}.tab.active{color:#10b981;border-bottom-color:#10b981}
+.content{max-width:1100px;margin:24px auto;padding:0 20px}
+.panel{display:none}.panel.active{display:block}
+.card{background:#1e293b;border-radius:14px;padding:24px;margin-bottom:16px;border:1px solid #334155}
+.card h3{font-size:18px;font-weight:700;color:#f1f5f9;margin-bottom:2px}
+.card .sub{color:#94a3b8;font-size:12px;margin-bottom:16px}
+.row{display:flex;gap:16px;flex-wrap:wrap}.col{flex:1;min-width:200px}
+label{display:block;font-size:12px;font-weight:600;color:#94a3b8;margin:10px 0 3px;text-transform:uppercase;letter-spacing:.5px}
+select,input[type=number]{width:100%;padding:9px 10px;border:1px solid #334155;border-radius:8px;font-size:13px;background:#0f172a;color:#e2e8f0;font-family:inherit}
+select:focus,input:focus{outline:none;border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+input[type=range]{width:100%;accent-color:#10b981;margin-top:4px}
+.rv{font-size:11px;color:#64748b;text-align:right}
+.btn{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;padding:11px 28px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;margin-top:14px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(16,185,129,.4)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.chart-box{width:100%;height:300px;margin:16px 0;background:#0f172a;border-radius:10px;border:1px solid #334155;padding:8px}
+canvas{width:100%!important;height:100%!important}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:12px 0}
+th{background:#0f172a;padding:10px;text-align:left;border-bottom:2px solid #334155;color:#94a3b8;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.8px}
+td{padding:8px 10px;border-bottom:1px solid #1e293b66}
+tr:hover{background:#ffffff06}
+.best{color:#10b981;font-weight:700}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0}
+.metric{background:#0f172a;border-radius:10px;padding:16px;text-align:center;border:1px solid #334155}
+.metric .ml{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64748b;font-weight:600}
+.metric .mv{font-size:22px;font-weight:800;margin:6px 0}
+.metric .mn{font-size:10px;color:#64748b}
+.green{color:#10b981}.blue{color:#3b82f6}.amber{color:#f59e0b}.red{color:#ef4444}
+.alert{padding:14px;border-radius:8px;margin:12px 0;font-size:12px}
+.alert.info{background:#1e3a5f;border:1px solid #2563eb;color:#93c5fd}
+.alert.warn{background:#451a03;border:1px solid #d97706;color:#fcd34d}
+.alert.ok{background:#064e3b;border:1px solid #10b981;color:#6ee7b7}
+.spinner{display:inline-block;width:16px;height:16px;border:3px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result{margin-top:16px;padding:20px;border-radius:10px;border-left:4px solid #10b981;background:#064e3b33}
+.result h4{font-size:18px;color:#10b981;margin-bottom:8px}
+.tips li{margin:6px 0;font-size:13px;color:#94a3b8}
+.err-cell{color:#f59e0b}
+@media(max-width:768px){.hdr{padding:16px}.tabs{padding:0 8px}.content{padding:0 10px}.row{flex-direction:column}.metrics{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<div class="hdr"><h1>🌾 AgriSense AI</h1><p>Price Forecasting (LightGBM + TFT) · Crop Recommendation · Predicted vs Actual</p></div>
+<div class="tabs">
+<div class="tab active" onclick="T(0)">📊 LightGBM Backtest</div>
+<div class="tab" onclick="T(1)">🔮 TFT Results</div>
+<div class="tab" onclick="T(2)">🌾 Crop Recommendation</div>
+<div class="tab" onclick="T(3)">📈 Model Comparison</div>
+</div>
+<div class="content">
+
+<!-- TAB 0: LGBM BACKTEST -->
+<div class="panel active" id="p0">
+<div class="card"><h3>LightGBM 14-Day Backtest</h3>
+<p class="sub">Predicts last 14 days using only prior data, then compares against actual prices. Data: June 2025 – April 2026.</p>
+<div class="row"><div class="col"><label>State</label><select id="ls" onchange="loadDist()"></select></div>
+<div class="col"><label>District</label><select id="ld" onchange="loadMandi()"></select></div></div>
+<div class="row"><div class="col"><label>Mandi (Market)</label><select id="lm" onchange="loadCom()"></select></div>
+<div class="col"><label>Commodity</label><select id="lc"></select></div></div>
+<button class="btn" onclick="lgbmPredict()" id="lb">🚀 Run Backtest (14 Days)</button>
+<div id="lr"></div></div></div>
+
+<!-- TAB 1: TFT RESULTS -->
+<div class="panel" id="p1">
+<div class="card"><h3>🔮 TFT Checkpoint Evaluation Results</h3>
+<p class="sub">Pre-computed from epoch=9-step=43310.ckpt · 3,815 validation sequences · 14-day multi-horizon</p>
+<div class="metrics" id="tftMetrics"></div>
+<table><tr><th>Model</th><th>MAE (₹/qtl)</th><th>RMSE</th><th>MAPE</th><th>SMAPE</th><th>Accuracy</th></tr>
+<tr><td>Naive (per-group carry-forward)</td><td>344.36</td><td>799.32</td><td>15.53%</td><td>13.14%</td><td>86.86%</td></tr>
+<tr><td>TFT (epoch 9, 43K steps)</td><td>319.88</td><td>647.88</td><td>15.77%</td><td>13.41%</td><td>86.59%</td></tr></table>
+<div class="alert warn">⚠️ TFT doesn't beat naive on SMAPE. Architecture too small (hidden_size=16, 54K params). Shows signs of both underfitting and overfitting. LightGBM remains the production model.</div>
+<div class="alert info">ℹ️ TFT's naive baseline = last known price repeated 14 days (per mandi-commodity). This is fundamentally different from LightGBM's naive (one global constant). The two evaluation regimes cannot be directly compared.</div>
+</div></div>
+
+<!-- TAB 2: CROP -->
+<div class="panel" id="p2">
+<div class="card"><h3>🌾 Crop Recommendation</h3><p class="sub">Enter soil and climate → LightGBM classifier predicts best crop (22 classes).</p>
+<div class="row"><div class="col"><label>Nitrogen (N)</label><input type="range" id="cn" min="0" max="140" value="50" oninput="U('cn')"><div class="rv" id="cn_v">50</div></div>
+<div class="col"><label>Phosphorus (P)</label><input type="range" id="cp" min="5" max="145" value="50" oninput="U('cp')"><div class="rv" id="cp_v">50</div></div>
+<div class="col"><label>Potassium (K)</label><input type="range" id="ck" min="5" max="205" value="50" oninput="U('ck')"><div class="rv" id="ck_v">50</div></div></div>
+<div class="row"><div class="col"><label>Temperature (°C)</label><input type="range" id="ct" min="8" max="44" value="25" step="0.5" oninput="U('ct')"><div class="rv" id="ct_v">25</div></div>
+<div class="col"><label>Humidity (%)</label><input type="range" id="ch" min="14" max="100" value="70" step="0.5" oninput="U('ch')"><div class="rv" id="ch_v">70</div></div></div>
+<div class="row"><div class="col"><label>pH</label><input type="range" id="cph" min="3.5" max="9.9" value="6.5" step="0.1" oninput="U('cph')"><div class="rv" id="cph_v">6.5</div></div>
+<div class="col"><label>Rainfall (mm)</label><input type="range" id="cr" min="20" max="300" value="100" step="1" oninput="U('cr')"><div class="rv" id="cr_v">100</div></div></div>
+<button class="btn" onclick="cropPredict()" id="cb">🌾 Get Recommendation</button>
+<div id="crr"></div></div></div>
+
+<!-- TAB 3: MODEL COMPARISON -->
+<div class="panel" id="p3">
+<div class="card"><h3>Model Performance Comparison</h3><p class="sub">All numbers from actual model evaluation — no fabricated metrics.</p>
+<div class="metrics">
+<div class="metric"><div class="ml">LightGBM</div><div class="mv green">91.20%</div><div class="mn">56,826 test rows</div></div>
+<div class="metric"><div class="ml">TFT (epoch 9)</div><div class="mv blue">86.59%</div><div class="mn">3,815 val seq</div></div>
+<div class="metric"><div class="ml">Moirai</div><div class="mv amber">~75.90%</div><div class="mn">Zero-shot</div></div>
+<div class="metric"><div class="ml">Disease Det</div><div class="mv green">98.42%</div><div class="mn">38 classes</div></div>
+<div class="metric"><div class="ml">Crop Rec</div><div class="mv green">>99%</div><div class="mn">22 classes</div></div>
+</div></div>
+<div class="card"><h3>Regime A — Single-Step (LightGBM eval, 56,826 rows)</h3>
+<table><tr><th>Model</th><th>MAE</th><th>RMSE</th><th>SMAPE</th><th>Accuracy</th></tr>
+<tr><td>Naive (global constant)</td><td>1,284</td><td>1,757</td><td>78.66%</td><td>21.34%</td></tr>
+<tr><td class="best">LightGBM</td><td class="best">160</td><td class="best">356</td><td class="best">8.80%</td><td class="best">91.20%</td></tr></table></div>
+<div class="card"><h3>Regime B — 14-Day Multi-Horizon (TFT eval, 3,815 sequences)</h3>
+<table><tr><th>Model</th><th>MAE</th><th>RMSE</th><th>SMAPE</th><th>Accuracy</th></tr>
+<tr><td>Naive (carry-forward)</td><td>344</td><td>799</td><td>13.14%</td><td>86.86%</td></tr>
+<tr><td>TFT (epoch 9)</td><td>320</td><td>648</td><td>13.41%</td><td>86.59%</td></tr></table></div>
+</div>
+</div>
+
+<script>
+function T(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i))}
+function U(id){document.getElementById(id+'_v').textContent=document.getElementById(id).value}
+
+async function loadSel(id,url){const r=await fetch(url);const d=await r.json();document.getElementById(id).innerHTML=d.map(v=>`<option>${v}</option>`).join('')}
+async function loadDist(){await loadSel('ld','/api/districts?state='+encodeURIComponent(document.getElementById('ls').value));loadMandi()}
+async function loadMandi(){const s=document.getElementById('ls').value,d=document.getElementById('ld').value;
+  await loadSel('lm','/api/mandis?state='+encodeURIComponent(s)+'&district='+encodeURIComponent(d));loadCom()}
+async function loadCom(){await loadSel('lc','/api/commodities?mandi='+encodeURIComponent(document.getElementById('lm').value))}
+async function init(){await loadSel('ls','/api/states');await loadDist();
+  // TFT metrics
+  const r=await fetch('/api/tft_eval');const e=await r.json();
+  document.getElementById('tftMetrics').innerHTML=`
+    <div class="metric"><div class="ml">TFT MAE</div><div class="mv blue">₹${e.tft.mae}</div><div class="mn">vs naive ₹${e.naive.mae}</div></div>
+    <div class="metric"><div class="ml">TFT Accuracy</div><div class="mv blue">${e.tft.accuracy}%</div><div class="mn">SMAPE-based</div></div>
+    <div class="metric"><div class="ml">Epoch</div><div class="mv amber">${e.tft.epoch}</div><div class="mn">${e.tft.steps.toLocaleString()} steps</div></div>
+    <div class="metric"><div class="ml">Val Sequences</div><div class="mv blue">${e.tft.samples.toLocaleString()}</div><div class="mn">14-day horizon</div></div>`;
+}
+init();
+
+let chart=null;
+async function lgbmPredict(){
+  const btn=document.getElementById('lb');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Running backtest...';
+  try{
+    const body={mandi:document.getElementById('lm').value,commodity:document.getElementById('lc').value};
+    const r=await fetch('/api/lgbm/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(d.error){document.getElementById('lr').innerHTML=`<div class="alert warn">⚠️ ${d.error}</div>`;return}
+    // Metrics bar
+    let html=`<div class="metrics">
+      <div class="metric"><div class="ml">MAE</div><div class="mv amber">₹${d.mae}</div><div class="mn">Avg error</div></div>
+      <div class="metric"><div class="ml">MAPE</div><div class="mv amber">${d.mape}%</div><div class="mn">% error</div></div>
+      <div class="metric"><div class="ml">Cutoff</div><div class="mv blue">${d.cutoff_date}</div><div class="mn">Last known</div></div>
+      <div class="metric"><div class="ml">Location</div><div class="mv green" style="font-size:14px">${d.state}</div><div class="mn">${d.district}</div></div>
+    </div>`;
+    // Chart
+    html+=`<div class="chart-box"><canvas id="lgbmC"></canvas></div>`;
+    // Table
+    html+=`<table><tr><th>Date</th><th>Predicted (₹)</th><th>Actual (₹)</th><th>Error (₹)</th><th>Error %</th></tr>`;
+    d.forecast.forEach((f,i)=>{
+      const a=d.actuals[i],actual=a?a[1]:null,err=actual?Math.abs(Math.round(f[1]-actual)):null;
+      const pct=actual?Math.round(Math.abs(f[1]-actual)/actual*100*10)/10:null;
+      html+=`<tr><td>${f[0]}</td><td class="best">₹${Math.round(f[1]).toLocaleString()}</td>`;
+      html+=actual?`<td>₹${Math.round(actual).toLocaleString()}</td><td class="err-cell">${err}</td><td class="err-cell">${pct}%</td>`:`<td>—</td><td>—</td><td>—</td>`;
+      html+=`</tr>`;
+    });
+    html+=`</table>`;
+    document.getElementById('lr').innerHTML=html;
+    // Draw chart
+    const labels=[...d.history.map(h=>h[0].slice(5)),...d.forecast.map(f=>f[0].slice(5))];
+    const hist=[...d.history.map(h=>h[1]),...new Array(d.forecast.length).fill(null)];
+    const fc=[...new Array(d.history.length-1).fill(null),d.history[d.history.length-1][1],...d.forecast.map(f=>f[1])];
+    const act=[...new Array(d.history.length).fill(null),...d.actuals.map(a=>a?a[1]:null)];
+    if(chart)chart.destroy();
+    chart=new Chart(document.getElementById('lgbmC').getContext('2d'),{type:'line',data:{labels,datasets:[
+      {label:'Historical Price',data:hist,borderColor:'#64748b',backgroundColor:'#64748b22',fill:true,tension:.3,pointRadius:1},
+      {label:'LightGBM Predicted',data:fc,borderColor:'#10b981',backgroundColor:'#10b98122',fill:true,tension:.3,pointRadius:3,borderWidth:3},
+      {label:'Actual Price',data:act,borderColor:'#f59e0b',borderDash:[5,5],pointRadius:4,borderWidth:2,fill:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8'}}},
+      scales:{x:{ticks:{color:'#64748b',maxTicksLimit:12},grid:{color:'#1e293b'}},y:{ticks:{color:'#64748b',callback:v=>'₹'+v},grid:{color:'#1e293b'}}}}});
+  }catch(e){document.getElementById('lr').innerHTML=`<div class="alert warn">⚠️ ${e.message}</div>`}
+  finally{btn.disabled=false;btn.innerHTML='🚀 Run Backtest (14 Days)'}
+}
+
+async function cropPredict(){
+  const btn=document.getElementById('cb');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Analyzing...';
+  try{
+    const body={nitrogen:+document.getElementById('cn').value,phosphorous:+document.getElementById('cp').value,
+      potassium:+document.getElementById('ck').value,temperature:+document.getElementById('ct').value,
+      humidity:+document.getElementById('ch').value,ph:+document.getElementById('cph').value,
+      rainfall:+document.getElementById('cr').value};
+    const r=await fetch('/api/crop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    let html=`<div class="result"><h4>🌾 ${d.top_crop} <span style="font-size:14px;color:#94a3b8">(${d.top_confidence}% confidence)</span></h4>`;
+    html+=`<p style="margin:8px 0;font-size:13px;color:#94a3b8">Alternatives:</p><ul class="tips">`;
+    d.alternatives.forEach(a=>html+=`<li>${a.crop} — ${a.confidence}%</li>`);
+    html+=`</ul><p style="margin:10px 0 4px;font-size:13px;color:#94a3b8">Fertilizer Tips:</p><ul class="tips">`;
+    d.fertilizer_tips.forEach(t=>html+=`<li>${t}</li>`);
+    html+=`</ul></div>`;
+    document.getElementById('crr').innerHTML=html;
+  }catch(e){document.getElementById('crr').innerHTML=`<div class="alert warn">⚠️ ${e.message}</div>`}
+  finally{btn.disabled=false;btn.innerHTML='🌾 Get Recommendation'}
+}
+</script></body></html>
