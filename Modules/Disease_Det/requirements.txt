@@ -1,0 +1,28 @@
+# Core Deep Learning
+tensorflow>=2.12.0
+keras>=2.12.0
+
+# Data Science & Visualization
+numpy>=1.23.0
+pandas>=1.5.0
+matplotlib>=3.6.0
+seaborn>=0.12.0
+scikit-learn>=1.2.0
+
+# Image Processing
+Pillow>=9.4.0
+opencv-python>=4.7.0
+imagehash>=4.3.1
+
+# Dataset Management
+kagglehub>=0.1.0
+
+# Dimensionality Reduction & Embeddings
+umap-learn>=0.5.3
+
+# Jupyter
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# Utilities
+tqdm>=4.64.0
