@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFT Forecasting Architecture — Sequence Modeling</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            min-height: 100vh; padding: 40px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container {
+            background: white; padding: 40px; border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08); max-width: 1400px; width: 100%;
+        }
+        h1 { color: #1e3a8a; text-align: center; font-size: 1.8em; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #374151; font-size: 1.05em; margin-bottom: 30px; line-height: 1.6; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 30px; }
+        .info-card {
+            background: #f9fafb; padding: 20px; border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        .info-card h3 { color: #1e3a8a; margin-bottom: 8px; font-size: 1em; }
+        .info-card p { color: #4b5563; font-size: 0.9em; line-height: 1.5; }
+        .badge {
+            display: inline-block; background: #3b82f6; color: white; padding: 3px 10px;
+            border-radius: 12px; font-size: 0.75em; margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 TFT Forecasting Architecture</h1>
+        <p class="subtitle">
+            Multi-Horizon Sequence Modeling: Temporal Fusion Transformer (TFT)<br>
+            <span class="badge">14-Day Horizon</span>
+            <span class="badge">86.6% Accuracy</span>
+            <span class="badge">Probabilistic Quantiles</span>
+            <span class="badge">PyTorch Forecasting</span>
+        </p>
+
+        <div class="mermaid">
+            flowchart TD
+                subgraph Data_Pipe ["1. Temporal Engineering (build_dl_features_fast.py)"]
+                    A1["Mandi Price Logs<br>(ALL_CROPS_DATA.csv)"] --> B1["Group by Mandi/Commodity<br>+ Chronological Sort"]
+                    B1 --> B2["Recursive Lag Generation<br>(7d, 14d, 30d stats)"]
+                    B2 --> B3["TimeSeriesDataSet<br>(dl_30_features_data.csv)"]
+                end
+
+                subgraph Preprocessing ["2. Feature Encoding"]
+                    B3 --> C1["Static: Mandi/Comm ID<br>(Entity Embeddings)"]
+                    B3 --> C2["Known: Fourier Sin/Cos<br>(Seasonal cyclicality)"]
+                    B3 --> C3["Unknown: Price/Weather/Lags<br>(Dynamic inputs)"]
+                end
+
+                subgraph Model_Architecture ["3. TFT Internal Logic (tft_multivariate_training.py)"]
+                    C1 & C2 & C3 --> D1["Variable Selection Network<br>(VSN: Dynamic Filtering)"]
+                    D1 --> D2["Gated Residual Network<br>(GRN: Noise suppression)"]
+                    D2 --> D3["Multi-Head Attention<br>(Long-range dependencies)"]
+                    D3 --> D4["Quantile Regression Layer<br>(P10, P50, P90)"]
+                end
+
+                subgraph Training_Loop ["4. Optimization (Lightning Trainer)"]
+                    D4 --> E1["QuantileLoss Tracking"]
+                    E1 --> E2["Gradient Clipping (0.1)<br>+ Early Stopping"]
+                    E2 --> E3[("tft_model_epoch6.ckpt")]
+                end
+
+                subgraph System_Deployment ["5. AgriSense AI Core (serve.py)"]
+                    E3 -.-> H1["Forecasting API<br>/api/tft/predict"]
+                    H1 --> H2["14-Day Trajectory<br>+ Confidence Bands<br>+ Multi-Step Metrics"]
+                end
+
+                classDef source fill:#eff6ff,stroke:#2563eb,stroke-width:2px;
+                classDef feat fill:#fffbeb,stroke:#d97706,stroke-width:2px;
+                classDef model fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
+                classDef artifact fill:#f9fafb,stroke:#4b5563,stroke-width:2px;
+
+                class A1,B1,B2,B3 source;
+                class C1,C2,C3 feat;
+                class D1,D2,D3,D4,E1,E2 model;
+                class E3,H1,H2 artifact;
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>📊 Multi-Horizon Forecasting</h3>
+                <p>Unlike standard regression, TFT predicts an entire <b>14-day horizon</b> simultaneously, capturing the complex "decay" of information over future time steps.</p>
+            </div>
+            <div class="info-card">
+                <h3>🔍 Feature Interpretability (VSN)</h3>
+                <p>The <b>Variable Selection Network</b> identifies which of the input signals (e.g., Rainfall vs. Past Price) are most predictive at each specific time step.</p>
+            </div>
+            <div class="info-card">
+                <h3>🛡️ Uncertainty Quantification</h3>
+                <p>Uses <b>Quantile Regression</b> to provide risk profiles (P10 to P90), allowing farmers to understand the "worst-case" and "best-case" market scenarios.</p>
+            </div>
+            <div class="info-card">
+                <h3>🔄 Seasonal Fourier Encodings</h3>
+                <p>Calendar days are mapped to <b>Sin/Cos coordinates</b>, ensuring the model understands that January 1st is chronologically adjacent to December 31st.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
