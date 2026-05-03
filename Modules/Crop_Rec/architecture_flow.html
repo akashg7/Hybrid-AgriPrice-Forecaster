@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Intelligence Architecture — Ecological Optimization</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            min-height: 100vh; padding: 40px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container {
+            background: white; padding: 40px; border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08); max-width: 1400px; width: 100%;
+        }
+        h1 { color: #064e3b; text-align: center; font-size: 1.8em; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #374151; font-size: 1.05em; margin-bottom: 30px; line-height: 1.6; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 30px; }
+        .info-card {
+            background: #f9fafb; padding: 20px; border-radius: 12px;
+            border-left: 4px solid #059669;
+        }
+        .info-card h3 { color: #064e3b; margin-bottom: 8px; font-size: 1em; }
+        .info-card p { color: #4b5563; font-size: 0.9em; line-height: 1.5; }
+        .badge {
+            display: inline-block; background: #059669; color: white; padding: 3px 10px;
+            border-radius: 12px; font-size: 0.75em; margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Crop Intelligence Architecture</h1>
+        <p class="subtitle">
+            Ecological Suitability Optimization: Multi-Class Agronomic Classifier<br>
+            <span class="badge">22 Crop Varieties</span>
+            <span class="badge">96.4% Accuracy</span>
+            <span class="badge">XGBoost Ensemble</span>
+            <span class="badge">Top-5 Priority Logic</span>
+        </p>
+
+        <div class="mermaid">
+            flowchart TD
+                subgraph Data_Pipe ["1. Agronomic Ingestion (Crop_Engine.py)"]
+                    A1["Soil Health Card Data<br>(N, P, K, pH)"] & A2["Environmental Logs<br>(Temp, Hum, Rain)"] --> B1["Input Normalization<br>+ Unit Conversion"]
+                end
+
+                subgraph Feature_Engineering ["2. Agronomic Feature Expansion"]
+                    B1 --> C1["Nutrient Ratios<br>(n_ratio, p_ratio, k_ratio)"]
+                    B1 --> C2["Environmental Proxies<br>(Aridity & Heat Indices)"]
+                    B1 --> C3["Categorical Regimes<br>(pH & Rainfall Bins)"]
+                    C1 & C2 & C3 --> C4["Expanded Feature Vector<br>(40+ Dimensions)"]
+                end
+
+                subgraph Model_Architecture ["3. Classification Engine"]
+                    C4 --> D1["XGBoost Ensemble Model<br>(Decision Tree Forest)"]
+                    D1 --> D2["Multi-Class Softmax<br>(22 Probability Scores)"]
+                    D2 --> D3["Confidence Ranking<br>(Top-K Selection)"]
+                end
+
+                subgraph System_Deployment ["4. AgriSense AI Core (serve.py)"]
+                    D3 -.-> H1["Recommendation API<br>/api/crop"]
+                    H1 --> H2["Optimized Crop List<br>+ Confidence Scores<br>+ Agronomic Tips"]
+                end
+
+                classDef source fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
+                classDef feat fill:#fffbeb,stroke:#d97706,stroke-width:2px;
+                classDef model fill:#eff6ff,stroke:#2563eb,stroke-width:2px;
+                classDef artifact fill:#f9fafb,stroke:#4b5563,stroke-width:2px;
+
+                class A1,A2,B1 source;
+                class C1,C2,C3,C4 feat;
+                class D1,D2,D3 model;
+                class H1,H2 artifact;
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🧪 Agronomic Context Scaling</h3>
+                <p>The model expands 7 raw inputs into **40+ engineered features**, identifying critical biological thresholds like the <b>Aridity Index</b> and <b>Nutrient Dominance</b>.</p>
+            </div>
+            <div class="info-card">
+                <h3>🏆 Multi-Class Precision</h3>
+                <p>Achieves a **96.4% accuracy** across 22 crop varieties, successfully resolving overlaps between visually similar cereal and pulse ecological niches.</p>
+            </div>
+            <div class="info-card">
+                <h3>⚡ Risk-Averse Recommendations</h3>
+                <p>Instead of a single prediction, the engine provides a **Top-5 prioritized list**, allowing farmers to weigh AI confidence against seed availability and market demand.</p>
+            </div>
+            <div class="info-card">
+                <h3>📡 Soil Health Integration</h3>
+                <p>Designed to consume data directly from Soil Health Card (SHC) schemas, bridging the gap between raw laboratory measurements and field-level planning.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
