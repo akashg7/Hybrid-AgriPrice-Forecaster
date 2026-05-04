@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense AI | Architecture Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --accent: #10b981;
+            --bg: #0f172a;
+            --card: rgba(30, 41, 59, 0.7);
+            --text: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .author-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text);
+            cursor: pointer;
+            border-radius: 12px;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .content-panel {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        .architecture-card {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .metric-item {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        code { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 style="font-size: 2.5rem; margin: 0;">AgriSense AI: Unified Architecture</h1>
+    <div class="author-badge">
+        Developed by <strong>Karthik Reddy</strong> & <strong>Akash G</strong>
+    </div>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('tft')">Price (TFT)</button>
+        <button class="tab-btn" onclick="showTab('lgbm')">Price (LGBM)</button>
+        <button class="tab-btn" onclick="showTab('crop')">Crop Intel</button>
+        <button class="tab-btn" onclick="showTab('disease')">Disease Radar</button>
+    </div>
+
+    <!-- TFT PANEL -->
+    <div id="tft" class="content-panel active">
+        <div class="architecture-card">
+            <h2>Temporal Fusion Transformer (TFT) Architecture</h2>
+            <p>Advanced multivariate sequence modeling for 14-day multi-horizon forecasting with Quantile risk corridors.</p>
+            
+            <div class="mermaid" style="background: white; padding: 1rem; border-radius: 10px;">
+                graph TD
+                    subgraph Input_Space [30-Day Context Window]
+                        A[Historical Prices] --> E[Variable Selection Network]
+                        B[NASA Weather Data] --> E
+                        C[Arrival Volumes] --> E
+                        D[Fourier Time Terms] --> E
+                    end
+                    
+                    E --> F[LSTM Encoder]
+                    F --> G[Interpretable Multi-Head Attention]
+                    
+                    subgraph Decision_Logic [Sequence Decoder]
+                        G --> H[Quantile Regressor]
+                        H --> I1[P10: Bearish Bound]
+                        H --> I2[P50: Median Modal]
+                        H --> I3[P90: Bullish Bound]
+                    end
+                    
+                    style I2 fill:#3b82f6,color:#fff
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <span class="metric-value">96.15%</span>
+                    <span class="metric-label">Inference Accuracy</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value">3.85%</span>
+                    <span class="metric-label">Final SMAPE</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value">14 Days</span>
+                    <span class="metric-label">Horizon</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LGBM PANEL -->
+    <div id="lgbm" class="content-panel">
+        <div class="architecture-card">
+            <h2>LightGBM Point Forecaster</h2>
+            <p>High-precision gradient boosting for single-step market timing and tabular feature importance ranking.</p>
+            <div class="mermaid" style="background: white; padding: 1rem; border-radius: 10px;">
+                graph LR
+                    A[Engineered Features] --> B[Leaf-wise GBDT Growth]
+                    B --> C[Iterative Residual Correction]
+                    C --> D[Point Price Prediction]
+                    
+                    subgraph Metrics
+                    D --> E[MAE: 160.41]
+                    D --> F[SMAPE: 8.80%]
+                    end
+            </div>
+            <div class="warning-card" style="margin-top: 1rem; background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 12px; color: #fbbf24; font-size: 0.9em;">
+                <strong>⚡ GOSS/EFB Optimization:</strong> This model uses Gradient-based One-Side Sampling and Exclusive Feature Bundling to process 250k+ records with 70+ features in under 2 seconds.
+                <br><a href="./Modules/Price_LGBM/architecture_flow.html" style="color: #f59e0b; text-decoration: underline; font-weight: bold;">View Detailed LGBM Flow →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- CROP PANEL -->
+    <div id="crop" class="content-panel">
+        <div class="architecture-card">
+            <h2>Crop Intelligence Engine</h2>
+            <p>Biological suitability matching using 45+ engineered agronomic markers (Aridity Index, Nutrient Ratios).</p>
+            <div class="mermaid" style="background: white; padding: 1rem; border-radius: 10px;">
+                graph TD
+                    A[Soil Profile NPK/pH] --> D[Feature Interaction Layer]
+                    B[Climate Forecast] --> D
+                    C[Aridity Index] --> D
+                    D --> E[Ensemble Classifier]
+                    E --> F[Top-3 Ranked Advisory]
+            </div>
+        </div>
+    </div>
+
+    <!-- DISEASE PANEL -->
+    <div id="disease" class="content-panel">
+        <div class="architecture-card">
+            <h2>Disease Diagnosis Radar</h2>
+            <p>Computer vision diagnostics using EfficientNet-B0 backbone for 38 distinct plant pathologies.</p>
+            <div class="mermaid" style="background: white; padding: 1rem; border-radius: 10px;">
+                graph LR
+                    A[Leaf Image] --> B[EfficientNet-B0 Feature Extractor]
+                    B --> C[Softmax Classifier]
+                    C --> D[38-Class Diagnosis]
+                    D --> E[Treatment Mapping Engine]
+            </div>
+            <div class="metric-item" style="margin-top: 1rem;">
+                <span class="metric-value">98.42%</span>
+                <span class="metric-label">Model Precision</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+    function showTab(tabId) {
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
