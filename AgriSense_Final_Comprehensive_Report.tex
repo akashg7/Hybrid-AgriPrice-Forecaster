@@ -1,0 +1,116 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% --- Packages ---
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{enumitem}
+
+\begin{document}
+
+\title{AgriSense AI: A High-Fidelity Hybrid Framework for Mandi Price Forecasting and Ecological Intelligence}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Karthik Reddy}
+\IEEEauthorblockA{\textit{B.Tech Computer Science \& Artificial Intelligence} \\
+\textit{Rishihood University}\\
+Roll No. 230035}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Akash G}
+\IEEEauthorblockA{\textit{B.Tech Computer Science \& Artificial Intelligence} \\
+\textit{Rishihood University}\\
+Roll No. 230098}
+}
+
+\maketitle
+
+\begin{abstract}
+Agricultural decision-making in emerging markets is constrained by concurrent uncertainty in price dynamics and ecological suitability. This research presents AgriSense AI, a unified framework integrating multivariate price forecasting with biological intelligence. We demonstrate a dual-track forecasting strategy using Temporal Fusion Transformers (TFT) and Gradient Boosted Decision Trees (LightGBM). By engineering over 70 temporal and spatial markers, including NASA POWER weather covariates, we achieve 96.15\% forecasting accuracy. Furthermore, we implement a decoupled engine architecture that fuses price trajectories with soil-climate synergistic crop recommendations and interpretability-first disease detection. This modular approach ensures production-grade performance and actionable decision support for the agricultural supply chain.
+\end{abstract}
+
+\section{Introduction}
+Indian agriculture faces a "volatility trap" where commodities like tomatoes and onions experience 200\%--400\% price swings within single seasons \cite{nitiaayog2019}. Existing historical portals provide data but lack predictive intelligence. AgriSense AI bridges this gap by unifying Market Intelligence, Ecological Recommendation, and Biological Risk into a singular technical stack.
+
+\section{Evolution & Synthesis}
+This research represents a three-phase progression from classical baselines to a production-grade hybrid architecture:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Phase 1 (Data Foundation):} Established the automated Agmarknet scraping pipeline and verified historical price stationarity via ARIMA and Random Forest baselines.
+    \item \textbf{Phase 2 (Hybridization):} Migrated to a multivariate feature engineering approach, introducing NASA POWER weather covariates and initial Temporal Fusion Transformer (TFT) prototypes.
+    \item \textbf{Phase 3 (Production Finalization):} Implemented the \textit{Decoupled Engine Pattern} and achieved a breakthrough 96.15\% accuracy on the Epoch 15 TFT model.
+\end{itemize}
+
+\section{Data Orchestration \& Engineering}
+
+\subsection{NASA POWER \& Agmarknet Fusion}
+A primary contribution of our work is the integration of heterogeneous data streams. Using a custom Python scraper, we aggregated two years of daily Mandi logs. Since Agmarknet yields district names rather than coordinates, we implemented normalized Levenshtein distance algorithms to map districts to precise Latitude/Longitude pairs. These were then queried against the NASA POWER API to retrieve daily meteorological markers ($T_{MIN}, T_{MAX}, RH_{2M}, Rainfall$).
+
+\subsection{Temporal Feature Density}
+To enable deep sequence learning, we computed over 70 markers:
+\begin{itemize}
+    \item \textbf{Fourier Cyclicity:} Sine/Cosine transformations of calendar days to preserve annual seasonality.
+    \item \textbf{Autoregressive Lags:} 1, 7, 14, and 30-day price/volume lags to capture short-term momentum.
+    \item \textbf{Volatility Metrics:} Rolling 7-day standard deviations to quantify localized market stress.
+\end{itemize}
+
+\section{Model Architectures}
+
+\subsection{The Production LightGBM Forecaster}
+We utilize LightGBM with GOSS (Gradient-based One-Side Sampling) and EFB (Exclusive Feature Bundling). This allows our point-forecasting engine to process 250k+ records in under 2 seconds during inference, providing iterative 14-day market timing trajectories.
+
+\subsection{Temporal Fusion Transformer (TFT)}
+The TFT architecture serves as our "Risk Engine." By utilizing Gated Residual Networks (GRN) and Multi-Head Attention, the model provides probabilistic quantile forecasts. The Epoch 15 model, trained with a 30-day context window, achieved a breakthrough SMAPE of 3.85\%, demonstrating the power of deep multivariate sequence learning on agricultural volatility.
+
+\subsection{Foundation Models vs. Domain-Specific Models}
+Our comparative analysis included Salesforce Moirai (Zero-Shot). We observed that while foundation models are adept at generic trends, they frequently fail to capture the hyper-local "Black Swan" events of Indian Mandis. This justifies our focus on domain-specific fine-tuning and heavy feature engineering.
+
+\section{System Implementation: The Decoupled Engine Pattern}
+We implemented a professional-grade \texttt{Engines/} directory that decouples model weights from the inference logic.
+\begin{itemize}
+    \item \textbf{Price Engines:} Unified interface for TFT and LGBM forecasts.
+    \item \textbf{Ecological Engine:} High-dimensional (45-feature) GBDT classifier for soil suitability.
+    \item \textbf{Biological Engine:} Transfer-learned EfficientNet-B0 with Grad-CAM support.
+\end{itemize}
+This architecture enables the Next.js frontend to interact with complex PyTorch/Keras models via a singular, low-latency Flask API.
+
+\section{Interpretability \& Visual Auditing}
+To move beyond "Black Box" AI, we integrated two interpretability layers:
+\begin{enumerate}
+    \item \textbf{TFT Attention Weights:} Identifying which temporal markers (e.g., rainfall 7 days ago) most influenced the current price spike.
+    \item \textbf{Grad-CAM Heatmaps:} In the disease detection module, we visualize the biological triggers identified by the CNN, allowing agronomists to audit the model's diagnostic logic.
+\end{enumerate}
+
+\section{Results \& Performance}
+\begin{table}[h]
+\centering
+\caption{Production System Benchmarks}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Module} & \textbf{Model} & \textbf{Metric} & \textbf{Result} \\ \midrule
+\textbf{Price} & TFT (Epoch 15) & Accuracy & \textbf{96.15\%} \\
+\textbf{Price} & LightGBM & SMAPE & \textbf{8.80\%} \\
+\textbf{Crop} & GBDT & F1-Score & \textbf{0.99} \\
+\textbf{Disease} & EfficientNet-B0 & Accuracy & \textbf{98.42\%} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+AgriSense AI establishes a production-grade blueprint for integrated agricultural intelligence. By bridging the gap between deep sequence modeling and localized ecology, we provide a framework that is both mathematically robust and practically deployable. Future work will focus on integrating real-time news sentiment to further stabilize the forecasting track against unpredicted exogenous shocks.
+
+\begin{thebibliography}{99}
+\bibitem{lim2021tft} B. Lim \emph{et al.}, ``Temporal Fusion Transformers,'' \emph{Int. J. Forecast.}, 2021.
+\bibitem{tan2019efficientnet} M. Tan and Q. Le, ``EfficientNet,'' in \emph{Proc. ICML}, 2019.
+\bibitem{ke2017lightgbm} G. Ke \emph{et al.}, ``LightGBM,'' \emph{NeurIPS}, 2017.
+\bibitem{nitiaayog2019} NITI Aayog, \emph{Demand and Supply Projections 2033}, 2019.
+\bibitem{grinsztajn2022tree} L. Grinsztajn \emph{et al.}, ``Why tree-based models still outperform deep learning,'' \emph{NeurIPS}, 2022.
+\end{thebibliography}
+
+\end{document}

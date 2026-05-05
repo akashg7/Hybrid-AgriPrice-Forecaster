@@ -82,3 +82,18 @@ presentation/
 # Ignore references explanation
 references_explain.txt
 references_explain.md
+
+# --- Newly added based on documentation ---
+# Data and Models subdirectories (that might not be covered by root rules)
+MandiPricePredictionSystem/data/raw/*
+MandiPricePredictionSystem/models/*
+CropRecommendationSystem/data/raw/*
+plantDiseasesDetection/data/*
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Temporary build artifacts
+build/
+dist/
+*.egg-info/
