@@ -68,6 +68,15 @@ models/
 *.h5
 *.ckpt
 
+# Allow specific production files
+!Modules/Price_TFT/models/
+!Modules/Price_TFT/models/tft-heavy-model/
+!Modules/Price_TFT/models/tft-heavy-model/best-advanced-tft-epoch=15-val_loss=44.81.ckpt
+!Modules/Price_LGBM/price_lgbm_full_features.pkl
+!Modules/Crop_Rec/models/
+!Modules/Crop_Rec/models/crop_model_ui.pkl
+!Modules/Price_TFT/data/hierarchy_map.csv
+
 # Outputs / Artefacts
 outputs/
 charts/
