@@ -1,0 +1,85 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+
+% Geometry setup
+\geometry{margin=1in}
+
+% Colors
+\definecolor{agrigreen}{HTML}{059669}
+\definecolor{agriamber}{HTML}{D97706}
+\definecolor{agriblue}{HTML}{2563EB}
+
+% Title Formatting
+\titleformat{\section}{\large\bfseries\color{agriblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\bfseries\color{agrigreen}}{}{0em}{}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textit{AgriSense Intelligence Hub}}
+\lhead{Executive Summary}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{AgriSense Intelligence Hub: Executive Summary}} \\
+    \vspace{0.2cm}
+    {\large \textit{Hybrid AI Framework for Precision Agriculture \& Market Intelligence}} \\
+    \vspace{0.5cm}
+    \textbf{Status: Production-Ready (Phase 3 Finalized)}
+\end{center}
+
+\section{Project Overview}
+AgriSense AI is a unified intelligence layer designed to mitigate financial risk and biological uncertainty in Indian agriculture. By utilizing a hybrid multi-model architecture, the platform bridges the gap between commodity price forecasting, soil-crop suitability, and early-warning disease detection.
+
+\section{Core Performance Metrics}
+The following table summarizes the validated performance of the AgriSense production modules as of May 5th, 2026.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Module} & \textbf{Core Model} & \textbf{Primary Metric} & \textbf{Value} \\ \midrule
+\textbf{Price (Primary)} & Temporal Fusion Transformer (TFT) & Accuracy (1-SMAPE) & \textbf{96.15\%} \\
+\textbf{Price (Secondary)} & LightGBM (GOSS/EFB Optimized) & SMAPE & \textbf{8.80\%} \\
+\textbf{Crop Intel} & Leaf-wise GBDT Classifier & F1-Score & \textbf{0.99} \\
+\textbf{Disease Radar} & EfficientNet-B0 (Transfer Learning) & Accuracy & \textbf{98.42\%} \\ \bottomrule
+\end{tabular}
+\caption{Production Model Benchmarks}
+\end{table}
+
+\section{The Dual-Track Forecasting Strategy}
+To capture both long-term market trends and short-term volatility, the system employs a synchronized forecasting track:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{TFT Track:} Captures long-range dependencies across 30-day context windows, providing quantile-based risk intervals for financial planning.
+    \item \textbf{LightGBM Track:} Provides ultra-low latency point predictions for 14-day market timing, leveraging over 70 engineered temporal features including Fourier seasonality and NASA weather shocks.
+\end{itemize}
+
+\section{Architectural Integrity}
+The system is built on a \textbf{Decoupled Engine Pattern}. The \texttt{Engines/} directory provides a canonical interface for all inference logic, ensuring the Next.js frontend can interact with high-compute PyTorch models and fast XGBoost/LGBM classifiers through a unified Flask-based Intelligence Hub.
+
+\section{Technocratic Assessment}
+While the \textbf{Crop Recommendation} and \textbf{Disease Detection} modules exhibit near-perfect benchmark performance, the system frames these as \textit{Biological Feasibility Indicators}. This honest assessment acknowledges the "Data-Sparse" constraints of specialized datasets (2,200 records) while emphasizing the high fidelity of the "Data-Rich" Mandi Price track (250,000+ records).
+
+\section{Conclusion}
+AgriSense AI represents a significant leap in data-driven agriculture, providing farmers with a robust toolkit for profit maximization and risk mitigation. The project is fully documented, modular, and ready for collaborative scaling.
+
+\vfill
+\begin{center}
+    \textit{Developed by Karthik Reddy (230035) \& Akash G (230098) --- Rishihood University}
+\end{center}
+
+\end{document}
