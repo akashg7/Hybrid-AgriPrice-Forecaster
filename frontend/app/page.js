@@ -8,7 +8,8 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
-const API = 'http://localhost:8000';
+// const API = 'http://localhost:8000';
+const API = 'https://huggingface.co/spaces/akashg7/agrisense-backend';
 
 // ── Audit stats per module ────────────────────────────────────────
 const AUDIT = {
