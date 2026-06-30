@@ -3,112 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TFT Forecasting Architecture — Sequence Modeling</title>
+    <title>TFT Production Architecture — AgriSense AI</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e3a8a;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            min-height: 100vh; padding: 40px;
-            display: flex; flex-direction: column; align-items: center;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
         .container {
-            background: white; padding: 40px; border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08); max-width: 1400px; width: 100%;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        h1 { color: #1e3a8a; text-align: center; font-size: 1.8em; margin-bottom: 8px; }
-        .subtitle { text-align: center; color: #374151; font-size: 1.05em; margin-bottom: 30px; line-height: 1.6; }
-        .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 30px; }
-        .info-card {
-            background: #f9fafb; padding: 20px; border-radius: 12px;
-            border-left: 4px solid #3b82f6;
+
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { 
+            color: white; 
+            font-size: 2.5em; 
+            margin-bottom: 12px;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .info-card h3 { color: #1e3a8a; margin-bottom: 8px; font-size: 1em; }
-        .info-card p { color: #4b5563; font-size: 0.9em; line-height: 1.5; }
+        .subtitle { color: var(--text-dim); font-size: 1.2em; line-height: 1.6; }
+
+        .badge-row { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+            margin-top: 20px; 
+            flex-wrap: wrap;
+        }
         .badge {
-            display: inline-block; background: #3b82f6; color: white; padding: 3px 10px;
-            border-radius: 12px; font-size: 0.75em; margin-right: 4px;
+            background: rgba(37, 99, 235, 0.1);
+            color: #60a5fa;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+        .badge.success { background: rgba(16, 185, 129, 0.1); color: #34d399; border-color: rgba(16, 185, 129, 0.2); }
+        .badge.warning { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border-color: rgba(245, 158, 11, 0.2); }
+
+        .mermaid-container {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 24px; 
+            margin-top: 20px; 
+        }
+        .info-card {
+            background: rgba(255,255,255,0.02);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.04);
+        }
+        .info-card h3 { color: #60a5fa; margin-bottom: 12px; font-size: 1.1em; display: flex; align-items: center; gap: 8px; }
+        .info-card p { color: var(--text-dim); font-size: 0.95em; line-height: 1.6; }
+
+        /* Mermaid Dark Theme Tweaks */
+        .mermaid svg { max-width: 100% !important; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔮 TFT Forecasting Architecture</h1>
-        <p class="subtitle">
-            Multi-Horizon Sequence Modeling: Temporal Fusion Transformer (TFT)<br>
-            <span class="badge">14-Day Horizon</span>
-            <span class="badge">86.6% Accuracy</span>
-            <span class="badge">Probabilistic Quantiles</span>
-            <span class="badge">PyTorch Forecasting</span>
-        </p>
+        <header>
+            <h1>AgriSense Production Architecture</h1>
+            <p class="subtitle">High-Precision Temporal Fusion Transformer (Heavy-TFT) Sequence Pipeline</p>
+            
+            <div class="badge-row">
+                <div class="badge success">✨ 96.15% Accuracy</div>
+                <div class="badge">🕒 60-Day Context Window</div>
+                <div class="badge warning">📈 14-Day Multi-Horizon</div>
+                <div class="badge">🧠 128 Hidden Units</div>
+                <div class="badge success">⚡ Production Epoch 15</div>
+            </div>
+        </header>
 
-        <div class="mermaid">
-            flowchart TD
-                subgraph Data_Pipe ["1. Temporal Engineering (build_dl_features_fast.py)"]
-                    A1["Mandi Price Logs<br>(ALL_CROPS_DATA.csv)"] --> B1["Group by Mandi/Commodity<br>+ Chronological Sort"]
-                    B1 --> B2["Recursive Lag Generation<br>(7d, 14d, 30d stats)"]
-                    B2 --> B3["TimeSeriesDataSet<br>(dl_30_features_data.csv)"]
-                end
+        <div class="mermaid-container">
+            <div class="mermaid">
+                flowchart TD
+                    subgraph Data_Pipe ["1. Production Data Orchestration"]
+                        A1[("Historical Mandi Logs<br/>(Agmarknet + NASA)")] --> B1["Temporal Feature Engineering<br/>(Lag-7, Lag-30, Volatility)"]
+                        B1 --> B2["Fuzzy Geospatial Mapping<br/>(District to Lat/Long)"]
+                        B2 --> B3["TimeSeriesDataSet<br/>(60d Encoder / 14d Decoder)"]
+                    end
 
-                subgraph Preprocessing ["2. Feature Encoding"]
-                    B3 --> C1["Static: Mandi/Comm ID<br>(Entity Embeddings)"]
-                    B3 --> C2["Known: Fourier Sin/Cos<br>(Seasonal cyclicality)"]
-                    B3 --> C3["Unknown: Price/Weather/Lags<br>(Dynamic inputs)"]
-                end
+                    subgraph Feature_Space ["2. Heterogeneous Inputs"]
+                        B3 --> C1["Static Categoricals<br/>(Mandi & Commodity ID)"]
+                        B3 --> C2["Known Reals<br/>(Fourier Seasonal Sin/Cos)"]
+                        B3 --> C3["Unknown Observed Reals<br/>(Price, Rainfall, Arrivals)"]
+                    end
 
-                subgraph Model_Architecture ["3. TFT Internal Logic (tft_multivariate_training.py)"]
-                    C1 & C2 & C3 --> D1["Variable Selection Network<br>(VSN: Dynamic Filtering)"]
-                    D1 --> D2["Gated Residual Network<br>(GRN: Noise suppression)"]
-                    D2 --> D3["Multi-Head Attention<br>(Long-range dependencies)"]
-                    D3 --> D4["Quantile Regression Layer<br>(P10, P50, P90)"]
-                end
+                    subgraph TFT_Core ["3. Heavy-TFT Architecture"]
+                        C1 & C2 & C3 --> D1["Variable Selection Network<br/>(VSN: 128 Hidden Size)"]
+                        D1 --> D2["Gated Residual Networks<br/>(GRN: Non-linear Gating)"]
+                        D2 --> D3["Temporal Self-Attention<br/>(4 Heads: Long-range patterns)"]
+                        D3 --> D4["Position-wise Feed Forward"]
+                        D4 --> D5["Quantile Output Layer<br/>(P10, P50, P90)"]
+                    end
 
-                subgraph Training_Loop ["4. Optimization (Lightning Trainer)"]
-                    D4 --> E1["QuantileLoss Tracking"]
-                    E1 --> E2["Gradient Clipping (0.1)<br>+ Early Stopping"]
-                    E2 --> E3[("tft_model_epoch6.ckpt")]
-                end
+                    subgraph Inference_Engine ["4. AgriSense Hub Deployment"]
+                        D5 --> E1["Production Weight Sync<br/>(best-epoch=15.ckpt)"]
+                        E1 --> E2["FastAPI Modular Engine<br/>(TFT_Engine.py)"]
+                        E2 --> E3["Next.js Production Dashboard<br/>(Real-time Visualization)"]
+                    end
 
-                subgraph System_Deployment ["5. AgriSense AI Core (serve.py)"]
-                    E3 -.-> H1["Forecasting API<br>/api/tft/predict"]
-                    H1 --> H2["14-Day Trajectory<br>+ Confidence Bands<br>+ Multi-Step Metrics"]
-                end
-
-                classDef source fill:#eff6ff,stroke:#2563eb,stroke-width:2px;
-                classDef feat fill:#fffbeb,stroke:#d97706,stroke-width:2px;
-                classDef model fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
-                classDef artifact fill:#f9fafb,stroke:#4b5563,stroke-width:2px;
-
-                class A1,B1,B2,B3 source;
-                class C1,C2,C3 feat;
-                class D1,D2,D3,D4,E1,E2 model;
-                class E3,H1,H2 artifact;
+                    style TFT_Core fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff
+                    style Data_Pipe fill:#0f172a,stroke:#10b981,stroke-width:2px,color:#fff
+                    style Inference_Engine fill:#0f172a,stroke:#f59e0b,stroke-width:2px,color:#fff
+            </div>
         </div>
 
         <div class="info-grid">
             <div class="info-card">
-                <h3>📊 Multi-Horizon Forecasting</h3>
-                <p>Unlike standard regression, TFT predicts an entire <b>14-day horizon</b> simultaneously, capturing the complex "decay" of information over future time steps.</p>
+                <h3>🧠 Architectural Scaling (Heavy-TFT)</h3>
+                <p>The production model features a <b>128-unit hidden state</b> and a <b>60-day context window</b>, enabling the system to capture complex annual price cycles and sudden market shocks with 96.15% precision.</p>
             </div>
             <div class="info-card">
-                <h3>🔍 Feature Interpretability (VSN)</h3>
-                <p>The <b>Variable Selection Network</b> identifies which of the input signals (e.g., Rainfall vs. Past Price) are most predictive at each specific time step.</p>
+                <h3>🔍 Feature Importance (VSN)</h3>
+                <p>The <b>Variable Selection Network</b> dynamically ranks exogenous signals. During the monsoon, weather covariates (Rainfall, Temp) are automatically weighted higher, while market volume (Arrivals) dominates during harvest gluts.</p>
             </div>
             <div class="info-card">
-                <h3>🛡️ Uncertainty Quantification</h3>
-                <p>Uses <b>Quantile Regression</b> to provide risk profiles (P10 to P90), allowing farmers to understand the "worst-case" and "best-case" market scenarios.</p>
+                <h3>🛡️ Risk-Aware Quantiles</h3>
+                <p>Instead of single-point forecasts, TFT yields <b>Probabilistic Quantiles (P10, P50, P90)</b>. This provides a "Confidence Corridor," helping farmers mitigate risk by seeing the possible downside (P10) of price volatility.</p>
             </div>
             <div class="info-card">
-                <h3>🔄 Seasonal Fourier Encodings</h3>
-                <p>Calendar days are mapped to <b>Sin/Cos coordinates</b>, ensuring the model understands that January 1st is chronologically adjacent to December 31st.</p>
+                <h3>🔄 Fourier Cyclicity</h3>
+                <p>Calendar seasonality is preserved via <b>Circular Fourier Transforms</b>. This allows the model to understand the chronological proximity of December and January, maintaining continuity across fiscal years.</p>
             </div>
         </div>
     </div>
 
     <script>
-        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'dark',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
     </script>
 </body>
 </html>

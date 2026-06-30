@@ -1,3 +1,13 @@
+---
+title: AgriSense AI Backend
+emoji: 🌾
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🌾 AgriSense Intelligence Hub
 ### *The Future of Hybrid Agricultural Forecasting*
 

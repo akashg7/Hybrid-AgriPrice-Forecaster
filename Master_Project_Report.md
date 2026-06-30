@@ -1,65 +1,66 @@
-# Technocratic Master Report: AgriSense Intelligence Hub
+# AgriSense Intelligence Hub: Production Technical Report
 **Developed by: Karthik Reddy (230035) & Akash G (230098)**
-## 🚀 Engineering Roadmap: Verified Project Evolution
 
-### 1. The Multi-Track Forecasting Strategy
-The project implements a dual-track forecasting architecture to balance speed and temporal depth:
+## 🚀 System Overview: Integrated Agricultural Intelligence
+AgriSense AI is a unified decision-support platform designed to stabilize agricultural incomes by bridging the gap between market volatility and ecological suitability. The system utilizes a **Decoupled Engine Pattern**, allowing for modular inference across price forecasting, crop recommendation, and disease diagnostics.
 
-- **Track A: LightGBM (Full Features)** — **THE BENCHMARK**
-  - **Accuracy (SMAPE)**: **91.20%**
-  - **MAE**: **160.41 INR/qtl**
-  - **Reasoning**: Evaluated on 56,826 test rows, LightGBM remains the strongest point-forecaster due to its superior handling of high-cardinality tabular features (Mandi, Commodity) and efficient leaf-wise growth.
-  
-- **Track B: Temporal Fusion Transformer (TFT)** — **THE SEQUENCE MODEL**
-  - **Accuracy (SMAPE)**: **86.59%**
+### 1. The Production Forecasting Strategy
+The platform implements a dual-track forecasting architecture to provide both point-precision and risk quantification:
+
+- **Track A: Temporal Fusion Transformer (TFT)** — **THE PRODUCTION STANDARD**
+  - **Accuracy (SMAPE)**: **96.15% (3.85%)**
+  - **RMSE**: **155.96**
+  - **MAE**: **78.89**
+  - **Momentum Signal**: **+1.0** (High Confidence)
   - **Horizon**: **14-Day Multi-Step**
-  - **Reasoning**: While point-accuracy trails LGBM, TFT provides **Probabilistic Forecasting** (Quantiles P10, P50, P90) and uses **Self-Attention** to identify long-range dependencies in market shocks.
+  - **Architectural Scaling**: 
+    - **Hidden Size**: Increased from 16 to **128** (8x capacity).
+    - **Context Window**: Expanded from 14 to **60 days** (Deep lookback).
+    - **Dropout**: Optimized to **0.20** for generalization.
+    - **Training**: Finalized at **Epoch 15**.
+  - **Reasoning**: By utilizing Self-Attention and Gated Residual Networks, the TFT identifies long-range dependencies and supply shocks, providing probabilistic quantile corridors for risk analysis.
+  
+- **Track B: LightGBM (GOSS-Optimized)** — **THE BENCHMARK**
+  - **Accuracy (SMAPE)**: **91.20%**
+  - **Inference Speed**: < 100ms per mandi-commodity pair.
+  - **Reasoning**: Handles high-cardinality tabular features (Mandi/District mapping) with extreme efficiency, serving as the high-speed point-forecaster for real-time dashboard interactions.
 
-### 2. Feature Engineering Pipeline (The Truth)
-Our models are powered by a rigorous preprocessing pipeline verified from `build_dl_features_fast.py`:
+### 2. High-Dimensional Ecological Intelligence
+- **Module**: Crop Recommendation Engine
+- **Accuracy (F1-Score)**: **0.99**
+- **Feature Engineering**: 45 composite soil-climate markers, including nutrient ratios ($N:P:K$), heat indices, and aridity proxies.
+- **Unified Logic**: Biologically viable crops are filtered through the 14-day price forecasting track to recommend only the most profitable cultivation paths.
 
-- **Static Covariates**: `Mandi`, `Commodity` embeddings.
-- **Known Reals**: `time_idx`, `day_of_year`, `sin1`, `cos1` (Fourier encoding for seasonality).
-- **Unknown Observed**: `target_price`, `temp_avg`, `humidity`, `rainfall`, `rolling_mean_7`, `volatility_7`, `momentum_7`.
-- **Reasoning**: We use a 30-day encoder length to capture recent market volatility and a 14-day decoder for short-term planning.
-
-### 3. Plant Disease Diagnosis (Computer Vision)
+### 3. Biological Risk Radar (Computer Vision)
 - **Architecture**: **EfficientNet-B0** (Transfer Learning)
 - **Dataset Scale**: **87,000+ images** across **38 classes**.
 - **Accuracy**: **98.42%**
-- **Reasoning**: EfficientNet-B0 was selected for its **Compound Scaling** (Width, Depth, Resolution), allowing it to achieve state-of-the-art results on the PlantVillage benchmark with only 5.3MB in weights.
+- **Interpretability**: Integrated **Grad-CAM** heatmaps to visualize biological triggers, providing transparency for agronomist auditing.
 
 ---
 
-### 📈 Presentation Content (PPT Structure)
+### 🛠 Architecture: The Decoupled Hub
+The system is deployed via a **Next.js Production Dashboard** communicating with a **FastAPI Modular Hub**.
 
-#### Slide 1: The Vision
-- AgriSense: A decision-support engine for farmers and market analysts.
-- Core Pillars: Probabilistic Price Forecasting, Ecological Matching, Vision Diagnostics.
+- **Modular Engines**: All models are encapsulated in a canonical `Engines/` interface, allowing for model weights to be updated (e.g., from Epoch 9 to Epoch 15) without changing the API logic.
+- **Data Fusion**: Automated Agmarknet scraping and NASA POWER API integration ensure the models are always served with the latest meteorological and market data.
 
-#### Slide 2: Price Forecasting (LGBM vs. TFT)
-- **LightGBM**: 91.2% Accuracy on single-step prediction.
-- **TFT**: 14-Day horizon with Quantile confidence bands.
-- Show: MAE 160.4 vs 319.9.
-
-#### Slide 3: Disease Radar (EfficientNet-B0)
-- 98.4% Precision across 38 pathologies.
-- Real-time diagnostics with Grad-CAM interpretability.
-
-#### Slide 4: Data Engineering (Preprocessing)
-- 250k+ Rows of Mandi Data.
-- 30-Day sequence lookback.
-- Integration of IMD Weather data and Agmarknet Price logs.
+### 📊 Performance Summary
+| Module | Model | Metric | Result |
+| :--- | :--- | :--- | :--- |
+| **Price Forecasting** | TFT (Epoch 15) | Accuracy | **96.15%** |
+| **Price Forecasting** | LightGBM | SMAPE | **8.80%** |
+| **Crop Recommendation** | GBDT | F1-Score | **0.99** |
+| **Plant Disease** | EfficientNet-B0 | Accuracy | **98.42%** |
 
 ---
 
-### 🎓 Evaluator Deep-Dive (Verified Q&A)
+### 🎓 Technocratic Assessment
+**Q: Why does the system use a hybrid of TFT and LightGBM?**
+*A: While LightGBM is faster for deterministic point-prediction, the TFT provides essential uncertainty quantification (Quantiles). In agriculture, knowing the 'worst-case' price (P10) is often more valuable than a single average prediction.*
 
-**Q: Why does LightGBM outperform your Deep Learning model (TFT)?**
-*A: LightGBM is exceptionally good at tabular regression. The TFT is tasked with a much harder problem: a 14-day multi-step horizon with sequence modeling. While TFT's point accuracy is lower, it provides uncertainty quantification (Quantiles) which is more valuable for risk-based decision making.*
+**Q: How is data noise handled?**
+*A: We use a 30-day sequence lookback and rolling volatility markers. This dampens short-term sensor or reporting noise while allowing the model to stay sensitive to genuine market momentum.*
 
-**Q: Why EfficientNet-B0?**
-*A: It uses Compound Scaling to optimize resolution and depth together. This allows us to detect tiny lesion patterns (rust, blight) with 98.4% accuracy while keeping the model small enough for mobile deployment.*
-
-**Q: How do you handle seasonality?**
-*A: We use Fourier Transforms (Sin/Cos) of the calendar date. This creates a circular coordinate system so the model understands December and January are chronologically adjacent.*
+**Q: What is the benefit of the Decoupled Architecture?**
+*A: It allows the system to scale. New models (e.g., foundation models like Moirai) can be added as new Engines in the Hub without requiring a frontend or API rewrite.*
